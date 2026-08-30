@@ -1,0 +1,30 @@
+{
+  "name": "cognitive-blends",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "config:check": "node scripts/config-check.mjs",
+    "probe:plans": "tsx scripts/probe-selling-plans.ts",
+    "probe:customer": "tsx scripts/probe-customer-api.ts"
+  },
+  "dependencies": {
+    "jose": "^6.2.10",
+    "next": "16.3.3",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.3",
+    "tsx": "^4.23.13",
+    "typescript": "^5"
+  }
+}
