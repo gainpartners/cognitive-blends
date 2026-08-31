@@ -40,6 +40,17 @@ ngrok http 3000
 
 Put the `https://…` URL in `NEXT_PUBLIC_APP_URL` and in Headless → Customer Account API → callback `…/auth/callback`. Full steps: [docs/shopify-setup.md](docs/shopify-setup.md#5-https-tunnel-ngrok).
 
+## Deploy (Vercel)
+
+Full steps and env table: [docs/vercel.md](docs/vercel.md).
+
+1. Import the GitHub repo in Vercel (Next.js, root `.`).
+2. Add the env vars below (Production + Preview). `NEXT_PUBLIC_APP_URL` is the Vercel `https://…` URL, no trailing slash.
+3. Headless → Customer Account API → callback `https://YOUR-PROJECT.vercel.app/auth/callback`.
+4. Deploy. Sign in with `ACCESS_PASSWORD`. Keep `SITE_ACCESS=preview` until launch.
+
+`NEXT_PUBLIC_*` needs a **Redeploy** after you change it.
+
 ## Brand
 
 Living guidelines: `/brand`. Tokens in `src/app/globals.css`. Shop pages compose `src/components/ui`. See [docs/brand.md](docs/brand.md).

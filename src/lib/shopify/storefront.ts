@@ -38,18 +38,20 @@ export async function storefrontFetch<T>(
     );
   }
 
-  const authHeader = token.startsWith('shfpt_') || token.startsWith('shpss_')
-    ? { 'Shopify-Storefront-Private-Token': token }
-    : { 'X-Shopify-Storefront-Access-Token': token };
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+  if (token.startsWith('shfpt_') || token.startsWith('shpss_')) {
+    headers['Shopify-Storefront-Private-Token'] = token;
+  } else {
+    headers['X-Shopify-Storefront-Access-Token'] = token;
+  }
 
   let response: Response;
   try {
     response = await fetch(storefrontEndpoint(), {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...authHeader,
-      },
+      headers,
       body: JSON.stringify({ query, variables }),
       cache: options?.cache ?? 'no-store',
       next:
