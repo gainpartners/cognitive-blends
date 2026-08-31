@@ -44,8 +44,8 @@ export async function getOpenIdConfig(): Promise<OpenIdConfig> {
   return (await response.json()) as OpenIdConfig;
 }
 
-export function oauthCallbackUrl() {
-  return `${APP_URL}/auth/callback`;
+export function oauthCallbackUrl(origin = APP_URL) {
+  return `${origin.replace(/\/+$/, '')}/auth/callback`;
 }
 
 export function customerAccountReady() {
@@ -73,12 +73,16 @@ async function tokenRequest(body: URLSearchParams) {
   };
 }
 
-export async function exchangeAuthorizationCode(code: string, verifier: string) {
+export async function exchangeAuthorizationCode(
+  code: string,
+  verifier: string,
+  redirectUri: string,
+) {
   const tokens = await tokenRequest(
     new URLSearchParams({
       grant_type: 'authorization_code',
       client_id: CUSTOMER_ACCOUNT_API_CLIENT_ID,
-      redirect_uri: oauthCallbackUrl(),
+      redirect_uri: redirectUri,
       code,
       code_verifier: verifier,
     }),
@@ -160,12 +164,12 @@ export async function customerFetch<T>(
   return payload.data;
 }
 
-export async function logoutRedirectUrl() {
+export async function logoutRedirectUrl(origin = APP_URL) {
   const session = await getCustomerTokens();
   const { end_session_endpoint } = await getOpenIdConfig();
   const url = new URL(end_session_endpoint);
   if (session?.idToken) url.searchParams.set('id_token_hint', session.idToken);
-  url.searchParams.set('post_logout_redirect_uri', `${APP_URL}/`);
+  url.searchParams.set('post_logout_redirect_uri', `${origin.replace(/\/+$/, '')}/`);
   await clearCustomerTokens();
   return url.toString();
 }

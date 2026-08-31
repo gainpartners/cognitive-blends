@@ -1,6 +1,10 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { exchangeAuthorizationCode } from '@/lib/shopify/customer-account';
+import { originFromRequest } from '@/lib/config/public';
+import {
+  exchangeAuthorizationCode,
+  oauthCallbackUrl,
+} from '@/lib/shopify/customer-account';
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -15,11 +19,19 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  const stored = JSON.parse(raw) as { verifier: string; state: string };
+  const stored = JSON.parse(raw) as {
+    verifier: string;
+    state: string;
+    redirectUri?: string;
+  };
   if (stored.state !== state) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  await exchangeAuthorizationCode(code, stored.verifier);
+  await exchangeAuthorizationCode(
+    code,
+    stored.verifier,
+    stored.redirectUri ?? oauthCallbackUrl(originFromRequest(request)),
+  );
   return NextResponse.redirect(new URL('/account', request.url));
 }

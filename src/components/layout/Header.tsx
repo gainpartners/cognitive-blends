@@ -20,10 +20,10 @@ export async function Header() {
           {customer ? (
             <>
               <Link href="/account">Account</Link>
-              <Link href="/logout">Log out</Link>
+              <a href="/logout">Log out</a>
             </>
           ) : (
-            <Link href="/login">Log in</Link>
+            <a href="/login">Log in</a>
           )}
         </nav>
       </div>

@@ -46,7 +46,7 @@ Full steps and env table: [docs/vercel.md](docs/vercel.md).
 
 1. Import the GitHub repo in Vercel (Next.js, root `.`).
 2. Add the env vars below (Production + Preview). `NEXT_PUBLIC_APP_URL` is the Vercel `https://…` URL, no trailing slash.
-3. Headless → Customer Account API → callback `https://YOUR-PROJECT.vercel.app/auth/callback`.
+3. Headless → Customer Account API → callback `https://cognitive-blends.vercel.app/auth/callback` (the real host, not a placeholder).
 4. Deploy. Sign in with `ACCESS_PASSWORD`. Keep `SITE_ACCESS=preview` until launch.
 
 `NEXT_PUBLIC_*` needs a **Redeploy** after you change it.

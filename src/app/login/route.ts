@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+import { originFromRequest } from '@/lib/config/public';
 import { CUSTOMER_ACCOUNT_API_CLIENT_ID } from '@/lib/config/server';
 import {
   customerAccountReady,
@@ -13,7 +14,7 @@ import {
   generateState,
 } from '@/lib/pkce';
 
-export async function GET() {
+export async function GET(request: Request) {
   if (!customerAccountReady()) {
     return NextResponse.json(
       { error: 'Customer Account API is not configured' },
@@ -26,11 +27,12 @@ export async function GET() {
   const state = generateState();
   const nonce = generateNonce();
   const challenge = generateCodeChallenge(verifier);
+  const redirectUri = oauthCallbackUrl(originFromRequest(request));
 
   const jar = await cookies();
   jar.set(
     'cb_pkce',
-    JSON.stringify({ verifier, state, nonce }),
+    JSON.stringify({ verifier, state, nonce, redirectUri }),
     {
       httpOnly: true,
       sameSite: 'lax',
@@ -43,7 +45,7 @@ export async function GET() {
   const url = new URL(authorization_endpoint);
   url.searchParams.set('client_id', CUSTOMER_ACCOUNT_API_CLIENT_ID);
   url.searchParams.set('response_type', 'code');
-  url.searchParams.set('redirect_uri', oauthCallbackUrl());
+  url.searchParams.set('redirect_uri', redirectUri);
   url.searchParams.set('scope', 'openid email customer-account-api:full');
   url.searchParams.set('state', state);
   url.searchParams.set('nonce', nonce);

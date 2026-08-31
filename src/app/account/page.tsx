@@ -1,5 +1,5 @@
-import { redirect } from 'next/navigation';
 import { cancelSubscriptionAction } from '@/app/actions/account';
+import { DocumentRedirect } from '@/components/DocumentRedirect';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Price } from '@/components/ui/Price';
@@ -71,7 +71,7 @@ export default async function AccountPage() {
   }
 
   const session = await getCustomerTokens();
-  if (!session) redirect('/login');
+  if (!session) return <DocumentRedirect href="/login" />;
 
   const data = await customerFetch<AccountData>(ACCOUNT_QUERY);
   const customer = data.customer;

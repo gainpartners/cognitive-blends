@@ -50,7 +50,7 @@ Add each of these. Apply to **Production**, **Preview**, and **Development** unl
 | `SHOPIFY_SHOP_ID` | numeric id from Headless Customer Account endpoints | From `https://shopify.com/authentication/{id}/…` |
 | `CUSTOMER_ACCOUNT_API_CLIENT_ID` | Headless Customer Account **Client ID** | Public client, no secret |
 | `CUSTOMER_ACCOUNT_API_VERSION` | `2025-10` | |
-| `NEXT_PUBLIC_APP_URL` | `https://cognitive-blends.vercel.app` | No trailing slash. Use the real Vercel URL (or custom domain later) |
+| `NEXT_PUBLIC_APP_URL` | `https://cognitive-blends.vercel.app` | Real host, no trailing slash. Do **not** paste `YOUR-PROJECT.vercel.app` |
 
 ### Reviews and native plans
 
@@ -78,17 +78,19 @@ openssl rand -base64 32
 
 ## 4. Shopify callback for the Vercel URL
 
-Headless → **Customer Account API → Manage** → Callback URL(s). Add:
+Headless → **Customer Account API → Manage** → Callback URL(s). Add the **real** Vercel URL, not the `YOUR-PROJECT` placeholder:
 
 ```
-https://YOUR-PROJECT.vercel.app/auth/callback
+https://cognitive-blends.vercel.app/auth/callback
 ```
 
 Logout URL:
 
 ```
-https://YOUR-PROJECT.vercel.app/
+https://cognitive-blends.vercel.app/
 ```
+
+Set `NEXT_PUBLIC_APP_URL=https://cognitive-blends.vercel.app` (no trailing slash) and **Redeploy**. `NEXT_PUBLIC_*` is baked in at build time.
 
 You can keep a second callback for ngrok while developing locally. Each URL must be listed exactly.
 
@@ -104,7 +106,7 @@ If you use Vercel Preview URLs (`…-git-….vercel.app`), either:
 
 **Deployments → Deploy**, or push to `main`.
 
-Open `https://YOUR-PROJECT.vercel.app`. Sign in with `ACCESS_PASSWORD`.
+Open `https://cognitive-blends.vercel.app`. Sign in with `ACCESS_PASSWORD`.
 
 If the shop says the Storefront token is an Admin `shpat_`, the Vercel env still has the wrong token. Edit it, then Redeploy.
 
