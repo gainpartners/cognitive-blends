@@ -205,6 +205,25 @@ h3 {
   color: var(--ink-soft);
 }
 
+.badge--verified {
+  background: #e8f6f3;
+  color: var(--accent);
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
 .field {
   display: flex;
   flex-direction: column;
@@ -346,14 +365,46 @@ form input[type="password"] {
   align-items: center;
 }
 
+.reviews__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.reviews__header h2 {
+  margin: 0;
+}
+
+.reviews__summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.reviews__average {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
 .review {
   border-top: 1px solid var(--line);
   padding: var(--space-4) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
 }
 
-.review h3 {
-  margin: 0 0 var(--space-2);
-  font-size: 1.05rem;
+.review p {
+  margin: 0;
+}
+
+.review__who {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
 }
 
 .product-layout {

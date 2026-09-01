@@ -4,7 +4,6 @@ import { parseRatingValue, StarRating } from '@/components/ui/StarRating';
 import { PurchaseForm } from '@/components/shop/PurchaseForm';
 import { Reviews } from '@/components/shop/Reviews';
 import { APPSTLE_SUBSCRIPTIONS_APP_NAME, isStorefrontConfigured } from '@/lib/config/server';
-import { listReviews } from '@/lib/judgeme';
 import { getProduct } from '@/lib/shopify/products';
 import { purchasePlans } from '@/lib/shopify/selling-plans';
 import { productNumericId } from '@/lib/utils';
@@ -39,7 +38,6 @@ export default async function ProductPage({
   const ratingCount = product.ratingCount?.value
     ? Number.parseInt(product.ratingCount.value, 10)
     : null;
-  const reviews = await listReviews(productNumericId(product.id));
   const hero = product.images.nodes[0];
 
   return (
@@ -72,7 +70,11 @@ export default async function ProductPage({
         className="prose"
         dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
       />
-      <Reviews reviews={reviews} rating={rating} count={ratingCount} />
+      <Reviews
+        externalId={productNumericId(product.id)}
+        rating={rating}
+        count={ratingCount}
+      />
     </div>
   );
 }

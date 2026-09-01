@@ -83,14 +83,22 @@ Native (legacy) subscribers manage contracts there. Appstle subscribers use the 
 
 ## 4. Judge.me
 
-Judge.me admin → Settings → Integrations:
+Judge.me admin → Settings → Integrations (private token, server only):
 
 ```
 JUDGEME_API_TOKEN=
 JUDGEME_SHOP_DOMAIN=zzqvvg-ma.myshopify.com
 ```
 
-Reviews are keyed by Shopify product id (`gid://shopify/Product/9529568592136` → `9529568592136` for ThriveOne).
+Summary stars and count come from Storefront metafields `reviews.rating` and `reviews.rating_count`. The review list is `GET https://judge.me/api/v1/reviews` with Judge.me’s **internal** `product_id`, not the Shopify id. `/reviews` with the wrong id falls back to every review on the shop.
+
+Resolve Shopify `external_id` `9529568592136` (ThriveOne) once:
+
+```bash
+npm run probe:reviews
+```
+
+Paste the printed map entry into `src/lib/judgeme-model.ts`. The app does not look the id up on page load. The list is server-cached and revalidated hourly.
 
 ---
 

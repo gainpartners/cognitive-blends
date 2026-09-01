@@ -13,9 +13,11 @@ export function parseRatingValue(raw: string | null | undefined): number | null 
 export function StarRating({
   value,
   count,
+  showValue = true,
 }: {
   value: number | null;
   count?: number | null;
+  showValue?: boolean;
 }) {
   if (value == null) return null;
   const rounded = Math.round(value);
@@ -26,10 +28,12 @@ export function StarRating({
       <span className="stars__marks" aria-hidden>
         {marks}
       </span>
-      <span>
-        {value.toFixed(1)}
-        {count != null ? ` · ${count} review${count === 1 ? '' : 's'}` : ''}
-      </span>
+      {showValue ? (
+        <span>
+          {value.toFixed(1)}
+          {count != null ? ` · ${count} review${count === 1 ? '' : 's'}` : ''}
+        </span>
+      ) : null}
     </span>
   );
 }

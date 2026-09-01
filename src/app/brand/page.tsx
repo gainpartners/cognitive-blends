@@ -1,3 +1,4 @@
+import { Avatar } from '@/components/ui/Avatar';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Price } from '@/components/ui/Price';
@@ -90,13 +91,19 @@ export default function BrandPage() {
             <Button variant="secondary">Checkout</Button>
             <Button variant="ghost" size="sm">Remove</Button>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             <Badge tone="subscribe">Subscribe</Badge>
             <Badge tone="onetime">One-time</Badge>
             <Badge tone="active">Active</Badge>
+            <Badge tone="verified">Verified</Badge>
+          </div>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <Avatar initial="M" />
+            <Avatar initial="a" />
           </div>
           <Price amount="64.99" size="lg" />
           <StarRating value={4.7} count={9} />
+          <StarRating value={5} showValue={false} />
           <div style={{ maxWidth: 280 }}>
             <ProductCard
               product={{

@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 
-export type BadgeTone = 'subscribe' | 'onetime' | 'active' | 'inactive';
+export type BadgeTone = 'subscribe' | 'onetime' | 'active' | 'inactive' | 'verified';
 
 export function Badge({
   tone,
