@@ -15,32 +15,34 @@ export default async function HomePage() {
   return (
     <>
       <section className="hero">
-        <div className="shell stack">
-          <h1 className="page-title" style={{ marginTop: 0 }}>
-            {hero.title}
-          </h1>
-          <p className="hero__body">{hero.body}</p>
-          <Button as="a" href={hero.cta.href} size="lg">
-            {hero.cta.label}
-          </Button>
+        <div className="shell">
+          <div className="hero__inner">
+            <h1 className="hero__title">{hero.title}</h1>
+            <p className="hero__body">{hero.body}</p>
+            <Button as="a" href={hero.cta.href} variant="secondary" size="lg">
+              {hero.cta.label}
+            </Button>
+          </div>
         </div>
       </section>
 
       <PopularProducts />
 
       <section className="section">
-        <div className="shell stack">
-          <h2 className="section-title">{thriveOneFeatures.title}</h2>
-          <p>{thriveOneFeatures.intro}</p>
-          <div className="feature-grid">
+        <div className="shell features">
+          <div className="features__intro">
+            <h2 className="section-title">{thriveOneFeatures.title}</h2>
+            <p>{thriveOneFeatures.intro}</p>
+          </div>
+          <div className="features__list">
             {thriveOneFeatures.blocks.map((block) => (
               <article key={block.title} className="feature-card">
                 <h3>{block.title}</h3>
                 <p>{block.body}</p>
               </article>
             ))}
+            <PurchaseCtas items={thriveOneFeatures.purchaseCtas} stacked />
           </div>
-          <PurchaseCtas items={thriveOneFeatures.purchaseCtas} />
         </div>
       </section>
 
@@ -53,7 +55,7 @@ export default async function HomePage() {
                 <Avatar initial={person.initial} />
                 <h3>{person.name}</h3>
                 <p className="muted">{person.role}</p>
-                <Button as="a" href={person.cta.href} variant="ghost">
+                <Button as="a" href={person.cta.href}>
                   {person.cta.label}
                 </Button>
               </article>
@@ -71,7 +73,7 @@ async function PopularProducts() {
     return (
       <section className="section" id="products">
         <div className="shell">
-          <h2 className="section-title">{popularProducts.heading}</h2>
+          <h2 className="section-title section-title--center">{popularProducts.heading}</h2>
           <p className="muted">
             Set <code>SHOPIFY_STOREFRONT_API_TOKEN</code> in <code>.env.local</code> to
             load the live catalogue.
@@ -91,7 +93,7 @@ async function PopularProducts() {
     return (
       <section className="section" id="products">
         <div className="shell">
-          <h2 className="section-title">{popularProducts.heading}</h2>
+          <h2 className="section-title section-title--center">{popularProducts.heading}</h2>
           <p className="error-text">{message}</p>
         </div>
       </section>
@@ -101,8 +103,8 @@ async function PopularProducts() {
   return (
     <section className="section" id="products">
       <div className="shell">
-        <h2 className="section-title">{popularProducts.heading}</h2>
-        <div className="product-grid" style={{ marginTop: 32 }}>
+        <h2 className="section-title section-title--center">{popularProducts.heading}</h2>
+        <div className="product-grid">
           {products.map((product) => (
             <ProductCard
               key={product.id}

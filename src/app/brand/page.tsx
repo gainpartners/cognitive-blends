@@ -11,7 +11,7 @@ export default function BrandPage() {
     <div className="brand-doc">
       <header className="bd-header">
         <div className="shell">
-          <p className="bd-section__tag" style={{ color: 'var(--gold)' }}>
+          <p className="bd-section__tag">
             Gain Partners
           </p>
           <h1>{brand.name}</h1>
@@ -45,7 +45,7 @@ export default function BrandPage() {
 
         <section className="bd-section">
           <div className="bd-section__tag">02 Colour</div>
-          <h2>Tokens from the live store</h2>
+          <h2>Tokens from cognitiveblends.com</h2>
           <div className="bd-swatches">
             {colours.map((colour) => (
               <div key={colour.token} className="bd-swatch">
@@ -62,11 +62,11 @@ export default function BrandPage() {
 
         <section className="bd-section">
           <div className="bd-section__tag">03 Type</div>
-          <h2>EB Garamond + Assistant</h2>
+          <h2>EB Garamond 400 + Assistant 400/700</h2>
           {typeScale.map((row) => (
             <div key={row.name} className="bd-type">
               <div className="muted">{row.name} · {row.spec}</div>
-              <div style={{ fontSize: row.name === 'Display' ? '2rem' : undefined }}>
+              <div className={row.name === 'Display' || row.name === 'Heading' ? 'bd-type--display' : undefined}>
                 {row.sample}
               </div>
             </div>
@@ -86,25 +86,25 @@ export default function BrandPage() {
         <section className="bd-section stack">
           <div className="bd-section__tag">05 Components</div>
           <h2>Live atoms</h2>
-          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          <div className="bd-row">
             <Button>Add to cart</Button>
-            <Button variant="secondary">Checkout</Button>
-            <Button variant="ghost" size="sm">Remove</Button>
+            <Button variant="secondary">Shop now</Button>
+            <Button variant="ghost">Buy It Once</Button>
           </div>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <div className="bd-row">
             <Badge tone="subscribe">Subscribe</Badge>
             <Badge tone="onetime">One-time</Badge>
             <Badge tone="active">Active</Badge>
             <Badge tone="verified">Verified</Badge>
           </div>
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <div className="bd-row">
             <Avatar initial="M" />
             <Avatar initial="a" />
           </div>
           <Price amount="64.99" size="lg" />
           <StarRating value={4.7} count={9} />
           <StarRating value={5} showValue={false} />
-          <div style={{ maxWidth: 280 }}>
+          <div className="bd-preview-card">
             <ProductCard
               product={{
                 handle: 'thriveone',
@@ -121,8 +121,9 @@ export default function BrandPage() {
         <section className="bd-section">
           <div className="bd-section__tag">06 Accessibility</div>
           <p>
-            Ink on paper and white on teal are the primary combinations. Gold is
-            for stars, not small body text.
+            White on charcoal and charcoal on sand are the primary combinations.
+            Sand is for headings and marketing buttons, not small body text. Teal
+            is for shop actions. Judge.me teal stays on the review widget.
           </p>
         </section>
       </div>

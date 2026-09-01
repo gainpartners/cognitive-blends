@@ -14,14 +14,14 @@ Source of truth: the living style guide at `/brand`. The shop is the brand in us
 
 Loaded only from `src/app/layout.tsx` via `next/font`:
 
-- Display: EB Garamond
-- Body / UI: Assistant
+- Display: EB Garamond 400
+- Body / UI: Assistant 400 / 700
 
-Taken from the live Shopify theme.
+Taken from the live Shopify theme (Dawn settings + homepage sections).
 
 ## Colour
 
-Extracted from cognitiveblends.com: paper `#FAFAF9`, ink `#121212`, teal `#108474`, gold `#FFB200`.
+Extracted from cognitiveblends.com: charcoal `#252525`, sand `#C9B288`, teal `#00A29B`, ink `#121212` / `#FFFFFF`. Judge.me teal `#108474` is the review widget only. Buttons and inputs are square (`--buttons-radius: 0px`).
 
 ## File map
 

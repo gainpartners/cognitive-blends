@@ -15,32 +15,34 @@ export async function Header() {
   return (
     <header className="site-header">
       <div className="shell site-header__inner">
-        <NavDrawer />
-        <Link href={homeHref} className="wordmark">
-          {brand.name}
-        </Link>
-        <NavLinks className="nav-links--desktop" label="Primary" />
-        <div className="header-tools">
-          <details className="header-search">
-            <summary className="header-icon" aria-label="Search">
-              <SearchIcon />
-            </summary>
-            <form role="search" action="/" method="get">
-              <input type="search" name="q" placeholder="Search" aria-label="Search" />
-            </form>
-          </details>
-          <a href={accountUrl} className="header-icon" aria-label="Account">
-            <AccountIcon />
-          </a>
-          <Link
-            href="/cart"
-            className="header-icon header-cart"
-            aria-label={qty ? `Cart, ${qty} items` : 'Cart'}
-          >
-            <CartIcon />
-            {qty ? <span className="cart-count">{qty}</span> : null}
+        <div className="site-header__bar">
+          <NavDrawer />
+          <Link href={homeHref} className="wordmark">
+            {brand.name}
           </Link>
+          <div className="header-tools">
+            <details className="header-search">
+              <summary className="header-icon" aria-label="Search">
+                <SearchIcon />
+              </summary>
+              <form role="search" action="/" method="get">
+                <input type="search" name="q" placeholder="Search" aria-label="Search" />
+              </form>
+            </details>
+            <a href={accountUrl} className="header-icon" aria-label="Account">
+              <AccountIcon />
+            </a>
+            <Link
+              href="/cart"
+              className="header-icon header-cart"
+              aria-label={qty ? `Cart, ${qty} items` : 'Cart'}
+            >
+              <CartIcon />
+              {qty ? <span className="cart-count">{qty}</span> : null}
+            </Link>
+          </div>
         </div>
+        <NavLinks className="nav-links--desktop" label="Primary" />
       </div>
     </header>
   );

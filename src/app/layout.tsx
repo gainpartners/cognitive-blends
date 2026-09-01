@@ -7,11 +7,13 @@ import './globals.css';
 
 const assistant = Assistant({
   subsets: ['latin'],
+  weight: ['400', '700'],
   variable: '--font-assistant',
 });
 
 const garamond = EB_Garamond({
   subsets: ['latin'],
+  weight: '400',
   variable: '--font-eb-garamond',
 });
 

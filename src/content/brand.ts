@@ -17,28 +17,28 @@ export const brand = {
 };
 
 export const colours = [
-  { name: 'Paper', token: '--bg', hex: '#FAFAF9', use: 'Page background' },
-  { name: 'Raised', token: '--bg-raised', hex: '#FFFFFF', use: 'Cards, header' },
-  { name: 'Ink', token: '--ink', hex: '#121212', use: 'Body text, prices' },
-  { name: 'Soft', token: '--ink-soft', hex: '#6B7280', use: 'Secondary copy' },
-  { name: 'Teal', token: '--accent', hex: '#108474', use: 'Primary CTAs' },
-  { name: 'Gold', token: '--gold', hex: '#FFB200', use: 'Stars, highlights' },
-  { name: 'Gold ink', token: '--gold-ink', hex: '#533C0A', use: 'Rating labels' },
-  { name: 'Line', token: '--line', hex: '#E5E7EB', use: 'Borders' },
-  { name: 'Error', token: '--error', hex: '#B42318', use: 'Form errors' },
+  { name: 'Charcoal', token: '--bg', hex: '#252525', use: 'Page, header, footer' },
+  { name: 'Raised', token: '--bg-raised', hex: '#FFFFFF', use: 'Product cards' },
+  { name: 'Ink', token: '--ink', hex: '#FFFFFF', use: 'Text on charcoal' },
+  { name: 'Ink dark', token: '--ink-dark', hex: '#121212', use: 'Text on sand and cards' },
+  { name: 'Sand', token: '--sand', hex: '#C9B288', use: 'Headings, marketing CTAs' },
+  { name: 'Teal', token: '--accent', hex: '#00A29B', use: 'Shop buttons, subscribe price' },
+  { name: 'Judge.me', token: '--accent-judge', hex: '#108474', use: 'Review widget only' },
+  { name: 'Mute', token: '--ink-mute', hex: '#6D7175', use: 'Captions, roles' },
+  { name: 'Error', token: '--error', hex: '#F87171', use: 'Form errors' },
 ] as const;
 
 export const typeScale = [
-  { name: 'Display', spec: 'EB Garamond 500 · clamp 2–2.75rem', sample: 'ThriveOne' },
-  { name: 'Heading', spec: 'EB Garamond 500 · 1.5rem', sample: 'Subscribe and save' },
-  { name: 'Body', spec: 'Assistant 400 · 16px · 1.55', sample: 'Proudly produced in the West of Ireland.' },
-  { name: 'UI', spec: 'Assistant 600 · 15px', sample: 'Add to cart' },
+  { name: 'Display', spec: 'EB Garamond 400 · clamp 2–3.75rem', sample: 'Formulas For Modern Living' },
+  { name: 'Heading', spec: 'EB Garamond 400 · clamp 1.6–2.875rem · sand', sample: 'Reach Your Next Level With ThriveOne' },
+  { name: 'Body', spec: 'Assistant 400 · 16px · 1.6 · 0.04em', sample: 'Proudly produced in the West of Ireland.' },
+  { name: 'UI', spec: 'Assistant 400 · 16px · square buttons', sample: 'Shop now' },
 ] as const;
 
 export const spacing = [
-  { token: '--space-2', px: 8, use: 'Tight gaps' },
-  { token: '--space-4', px: 16, use: 'Card padding' },
-  { token: '--space-5', px: 24, use: 'Section gaps' },
-  { token: '--space-7', px: 48, use: 'Page title offset' },
-  { token: '--space-8', px: 64, use: 'Footer / section padding' },
+  { token: '--space-2', px: 8, use: 'Tight gaps (Dawn desktop grid)' },
+  { token: '--space-4', px: 16, use: 'Hero mobile heading gap' },
+  { token: '--space-5', px: 20, use: 'Card padding, product grid' },
+  { token: '--space-7', px: 40, use: 'Section padding (mobile)' },
+  { token: '--space-8', px: 60, use: 'Section padding (desktop)' },
 ] as const;
