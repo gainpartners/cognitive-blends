@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { forwardRef } from 'react';
 
@@ -48,6 +49,18 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPr
     );
 
     if (props.as === 'a') {
+      if (props.href.startsWith('/')) {
+        return (
+          <Link
+            ref={ref as React.Ref<HTMLAnchorElement>}
+            href={props.href}
+            className={classes}
+          >
+            {props.children}
+          </Link>
+        );
+      }
+
       return (
         <a
           ref={ref as React.Ref<HTMLAnchorElement>}

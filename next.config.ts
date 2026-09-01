@@ -10,6 +10,14 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'cognitiveblends.com' },
     ],
   },
+  async redirects() {
+    return [
+      { source: '/pages/thriveone', destination: '/what-is-thriveone', permanent: false },
+      { source: '/pages/about-us', destination: '/our-story', permanent: false },
+      { source: '/pages/contact', destination: '/contact', permanent: false },
+      { source: '/collections/frontpage', destination: '/', permanent: false },
+    ];
+  },
 };
 
 export default nextConfig;

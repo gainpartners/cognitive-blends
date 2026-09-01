@@ -1,5 +1,9 @@
+import { PurchaseCtas } from '@/components/content/PurchaseCtas';
+import { Avatar } from '@/components/ui/Avatar';
+import { Button } from '@/components/ui/Button';
 import { ProductCard } from '@/components/ui/ProductCard';
 import { parseRatingValue } from '@/components/ui/StarRating';
+import { hero, popularProducts, thriveOneFeatures, whoWeAre } from '@/content/home';
 import { isStorefrontConfigured } from '@/lib/config/server';
 import { errorFields, logger } from '@/lib/log';
 import { listProducts } from '@/lib/shopify/products';
@@ -8,16 +12,72 @@ import { StorefrontError } from '@/lib/shopify/storefront';
 const log = logger('shop');
 
 export default async function HomePage() {
+  return (
+    <>
+      <section className="hero">
+        <div className="shell stack">
+          <h1 className="page-title" style={{ marginTop: 0 }}>
+            {hero.title}
+          </h1>
+          <p className="hero__body">{hero.body}</p>
+          <Button as="a" href={hero.cta.href} size="lg">
+            {hero.cta.label}
+          </Button>
+        </div>
+      </section>
+
+      <PopularProducts />
+
+      <section className="section">
+        <div className="shell stack">
+          <h2 className="section-title">{thriveOneFeatures.title}</h2>
+          <p>{thriveOneFeatures.intro}</p>
+          <div className="feature-grid">
+            {thriveOneFeatures.blocks.map((block) => (
+              <article key={block.title} className="feature-card">
+                <h3>{block.title}</h3>
+                <p>{block.body}</p>
+              </article>
+            ))}
+          </div>
+          <PurchaseCtas items={thriveOneFeatures.purchaseCtas} />
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="shell stack">
+          <h2 className="section-title">{whoWeAre.heading}</h2>
+          <div className="who-grid">
+            {whoWeAre.people.map((person) => (
+              <article key={person.name} className="who-card">
+                <Avatar initial={person.initial} />
+                <h3>{person.name}</h3>
+                <p className="muted">{person.role}</p>
+                <Button as="a" href={person.cta.href} variant="ghost">
+                  {person.cta.label}
+                </Button>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
+
+async function PopularProducts() {
   if (!isStorefrontConfigured()) {
     log.warn('home skipped; storefront is not configured');
     return (
-      <div className="shell">
-        <h1 className="page-title">Cognitive Blends</h1>
-        <p className="muted">
-          Set <code>SHOPIFY_STOREFRONT_API_TOKEN</code> in <code>.env.local</code> to
-          load the live catalogue.
-        </p>
-      </div>
+      <section className="section" id="products">
+        <div className="shell">
+          <h2 className="section-title">{popularProducts.heading}</h2>
+          <p className="muted">
+            Set <code>SHOPIFY_STOREFRONT_API_TOKEN</code> in <code>.env.local</code> to
+            load the live catalogue.
+          </p>
+        </div>
+      </section>
     );
   }
 
@@ -29,35 +89,38 @@ export default async function HomePage() {
     const message =
       error instanceof StorefrontError ? error.message : 'Could not load products';
     return (
-      <div className="shell">
-        <h1 className="page-title">Shop</h1>
-        <p className="error-text">{message}</p>
-      </div>
+      <section className="section" id="products">
+        <div className="shell">
+          <h2 className="section-title">{popularProducts.heading}</h2>
+          <p className="error-text">{message}</p>
+        </div>
+      </section>
     );
   }
 
   return (
-    <div className="shell">
-      <h1 className="page-title">Formulas for modern living</h1>
-      <p className="muted">Made in the West of Ireland.</p>
-      <div className="product-grid" style={{ marginTop: 32 }}>
-        {products.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={{
-              handle: product.handle,
-              title: product.title,
-              image: product.featuredImage,
-              amount: product.priceRange.minVariantPrice.amount,
-              currencyCode: product.priceRange.minVariantPrice.currencyCode,
-              rating: parseRatingValue(product.rating?.value),
-              ratingCount: product.ratingCount?.value
-                ? Number.parseInt(product.ratingCount.value, 10)
-                : null,
-            }}
-          />
-        ))}
+    <section className="section" id="products">
+      <div className="shell">
+        <h2 className="section-title">{popularProducts.heading}</h2>
+        <div className="product-grid" style={{ marginTop: 32 }}>
+          {products.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={{
+                handle: product.handle,
+                title: product.title,
+                image: product.featuredImage,
+                amount: product.priceRange.minVariantPrice.amount,
+                currencyCode: product.priceRange.minVariantPrice.currencyCode,
+                rating: parseRatingValue(product.rating?.value),
+                ratingCount: product.ratingCount?.value
+                  ? Number.parseInt(product.ratingCount.value, 10)
+                  : null,
+              }}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

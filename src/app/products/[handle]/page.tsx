@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { parseRatingValue, StarRating } from '@/components/ui/StarRating';
+import { ProductAccordion } from '@/components/shop/ProductAccordion';
 import { PurchaseForm } from '@/components/shop/PurchaseForm';
 import { Reviews } from '@/components/shop/Reviews';
 import { APPSTLE_SUBSCRIPTIONS_APP_NAME, isStorefrontConfigured } from '@/lib/config/server';
@@ -79,6 +80,7 @@ export default async function ProductPage({
         className="prose"
         dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
       />
+      {handle === 'thriveone' ? <ProductAccordion /> : null}
       <Reviews
         externalId={productNumericId(product.id)}
         rating={rating}
