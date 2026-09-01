@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { PurchaseCtas } from '@/components/content/PurchaseCtas';
 import { whatIsThriveOne } from '@/content/pages/what-is-thriveone';
 
@@ -13,6 +14,16 @@ export default function WhatIsThriveOnePage() {
       {whatIsThriveOne.intro.map((paragraph) => (
         <p key={paragraph}>{paragraph}</p>
       ))}
+      {whatIsThriveOne.photo ? (
+        <div className="page-photo">
+          <Image
+            src={whatIsThriveOne.photo}
+            alt=""
+            width={2000}
+            height={1334}
+          />
+        </div>
+      ) : null}
 
       <section className="stack">
         <h2>{whatIsThriveOne.whatItDoes.heading}</h2>
@@ -45,7 +56,17 @@ export default function WhatIsThriveOnePage() {
         <p>{whatIsThriveOne.whatsInside.intro}</p>
         <div className="feature-grid">
           {whatIsThriveOne.whatsInside.ingredients.map((ingredient) => (
-            <article key={ingredient.title} className="feature-card">
+            <article key={ingredient.title} className="feature-card ingredient-card">
+              {'image' in ingredient && ingredient.image ? (
+                <div className="ingredient-card__image">
+                  <Image
+                    src={ingredient.image}
+                    alt=""
+                    fill
+                    sizes="220px"
+                  />
+                </div>
+              ) : null}
               <h3>{ingredient.title}</h3>
               <p>{ingredient.body}</p>
             </article>

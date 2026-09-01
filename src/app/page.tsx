@@ -1,5 +1,5 @@
+import Image from 'next/image';
 import { PurchaseCtas } from '@/components/content/PurchaseCtas';
-import { Avatar } from '@/components/ui/Avatar';
 import { Button } from '@/components/ui/Button';
 import { ProductCard } from '@/components/ui/ProductCard';
 import { parseRatingValue } from '@/components/ui/StarRating';
@@ -15,6 +15,18 @@ export default async function HomePage() {
   return (
     <>
       <section className="hero">
+        <video
+          className="hero__video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster={hero.poster}
+          aria-hidden
+        >
+          <source src={hero.video} type="video/mp4" />
+        </video>
+        <div className="hero__overlay" />
         <div className="shell">
           <div className="hero__inner">
             <h1 className="hero__title">{hero.title}</h1>
@@ -33,6 +45,16 @@ export default async function HomePage() {
           <div className="features__intro">
             <h2 className="section-title">{thriveOneFeatures.title}</h2>
             <p>{thriveOneFeatures.intro}</p>
+            {thriveOneFeatures.image ? (
+              <div className="features__image">
+                <Image
+                  src={thriveOneFeatures.image}
+                  alt=""
+                  width={1000}
+                  height={771}
+                />
+              </div>
+            ) : null}
           </div>
           <div className="features__list">
             {thriveOneFeatures.blocks.map((block) => (
@@ -52,12 +74,21 @@ export default async function HomePage() {
           <div className="who-grid">
             {whoWeAre.people.map((person) => (
               <article key={person.name} className="who-card">
-                <Avatar initial={person.initial} />
-                <h3>{person.name}</h3>
-                <p className="muted">{person.role}</p>
-                <Button as="a" href={person.cta.href}>
-                  {person.cta.label}
-                </Button>
+                <div className="who-card__image">
+                  <Image
+                    src={person.image}
+                    alt={person.name}
+                    fill
+                    sizes="(min-width: 750px) 50vw, 100vw"
+                  />
+                </div>
+                <div className="who-card__body">
+                  <h3>{person.name}</h3>
+                  <p className="muted">{person.role}</p>
+                  <Button as="a" href={person.cta.href}>
+                    {person.cta.label}
+                  </Button>
+                </div>
               </article>
             ))}
           </div>

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
 import { ourStory } from '@/content/pages/our-story';
 
@@ -15,14 +16,26 @@ export default function OurStoryPage() {
       ))}
 
       {ourStory.people.map((person) => (
-        <section key={person.heading} className="stack">
-          <h2>{person.heading}</h2>
-          {'credentials' in person && person.credentials ? (
-            <p className="muted">{person.credentials}</p>
+        <section key={person.heading} className="bio">
+          {'image' in person && person.image ? (
+            <div className="bio__image">
+              <Image
+                src={person.image}
+                alt={person.heading}
+                width={800}
+                height={800}
+              />
+            </div>
           ) : null}
-          {person.paragraphs.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
+          <div className="stack">
+            <h2>{person.heading}</h2>
+            {'credentials' in person && person.credentials ? (
+              <p className="muted">{person.credentials}</p>
+            ) : null}
+            {person.paragraphs.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
         </section>
       ))}
 

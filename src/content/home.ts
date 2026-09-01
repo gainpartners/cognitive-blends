@@ -1,6 +1,8 @@
 export const hero = {
   title: 'Formulas For Modern Living',
   body: 'Our products are proudly made in the West of Ireland and are designed to promote quality sleep, balanced hormones and sustained energy so you can feel strong, focused and ready for anything.',
+  video: '/brand/hero.mp4',
+  poster: '/brand/thriveone-lifestyle.png',
   cta: {
     label: 'Shop now',
     href: '/',
@@ -15,6 +17,7 @@ export const thriveOneFeatures = {
   title: 'Reach Your Next Level With ThriveOne',
   intro:
     'Carefully crafted with premium ingredients to help you sleep, perform and recover at the maximum level.',
+  image: '/brand/thriveone-lifestyle.png',
   blocks: [
     {
       title: 'Restorative Sleep',
@@ -46,12 +49,14 @@ export const whoWeAre = {
       name: 'Jack Carty',
       role: 'Founder',
       initial: 'J',
+      image: '/brand/jack-carty.jpg',
       cta: { label: 'Learn More', href: '/our-story' },
     },
     {
       name: 'Dr Alan Farrell',
       role: 'Medical Advisor',
       initial: 'A',
+      image: '/brand/alan-farrell.png',
       cta: { label: 'Learn More', href: '/our-story' },
     },
   ],

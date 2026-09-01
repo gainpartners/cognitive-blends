@@ -44,6 +44,7 @@ export const whatIsThriveOne = {
     { label: 'Subscribe & Save 15%', href: '/products/thriveone' },
     { label: 'Buy It Once', href: '/products/thriveone' },
   ],
+  photo: '/brand/thriveone-photo.jpg',
   whatsInside: {
     heading: "What's Inside?",
     intro:
@@ -51,22 +52,27 @@ export const whatIsThriveOne = {
     ingredients: [
       {
         title: 'Ashwagandha',
+        image: '/brand/ingredients/ashwagandha.png',
         body: 'Ashwagandha is a powerful adaptogen known to reduce stress by lowering cortisol levels, which indirectly promotes testosterone production. Additionally, it enhances mental clarity, focus, and stamina, helping to counteract fatigue and promote a positive mood.',
       },
       {
         title: 'Maca Root',
+        image: '/brand/ingredients/maca.png',
         body: "Maca Root is celebrated for its ability to boost energy, endurance, and libido. It's an adaptogenic herb that helps the body handle stress, making it ideal for enhancing both physical and mental performance. Known to support mood and stamina, it complements the effects of other ingredients in ThriveOne.",
       },
       {
         title: 'Magnesium',
+        image: '/brand/ingredients/magnesium.png',
         body: "Magnesium plays a key role in muscle function, energy production, and stress management. In its citrate form, it's highly absorbable, supporting cardiovascular health and helping regulate sleep and mood. Studies show that magnesium supplementation may also boost testosterone in men, contributing to overall hormonal balance.",
       },
       {
         title: 'Vitamin D',
+        image: '/brand/ingredients/vitamin-d.png',
         body: 'Known as the "sunshine vitamin," Vitamin D3 is essential for immune support, mood regulation, and bone health. It\'s also linked to testosterone production, with research suggesting that adequate Vitamin D3 levels support optimal hormone balance and male vitality.',
       },
       {
         title: 'Zinc',
+        image: '/brand/ingredients/zinc.png',
         body: 'Zinc is crucial for maintaining male hormone health, immune strength, and reproductive wellness. It plays a significant role in testosterone production, muscle growth, and recovery. Zinc deficiency is linked to decreased testosterone, making it vital for maintaining hormonal balance.',
       },
     ],

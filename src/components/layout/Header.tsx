@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { getCart } from '@/lib/shopify/cart';
 import { isStorefrontConfigured, shopifyHostedAccountUrl } from '@/lib/config/server';
@@ -18,7 +19,13 @@ export async function Header() {
         <div className="site-header__bar">
           <NavDrawer />
           <Link href={homeHref} className="wordmark">
-            {brand.name}
+            <Image
+              src={brand.logo.wordmark}
+              alt={brand.name}
+              width={180}
+              height={48}
+              priority
+            />
           </Link>
           <div className="header-tools">
             <details className="header-search">

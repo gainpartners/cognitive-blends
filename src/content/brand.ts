@@ -2,6 +2,10 @@ export const brand = {
   name: 'Cognitive Blends',
   line: 'Formulas For Modern Living',
   place: 'West of Ireland',
+  logo: {
+    wordmark: '/brand/logo-wordmark.png',
+    mark: '/brand/logo-mark.png',
+  },
   narrative:
     'Cognitive Blends makes science-backed supplements in the West of Ireland. ThriveOne is the flagship: five ingredients chosen to work together for sleep, energy, focus, and hormonal balance.',
   voice: [
