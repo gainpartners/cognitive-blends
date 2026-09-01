@@ -1,8 +1,3 @@
-/** ThriveOne Shopify id → Judge.me internal product id. Filled from `npm run probe:reviews`. */
-export const JUDGEME_PRODUCT_ID_BY_EXTERNAL_ID: Record<string, number> = {
-  // '9529568592136': <probe>,
-};
-
 export const REVIEWS_PER_PAGE = 100;
 
 export type ProductReview = {
@@ -32,18 +27,37 @@ export type JudgeMeReviewPayload = {
   reviewer?: { name?: unknown };
   is_anonymous_reviewer?: unknown;
   verified_buyer?: unknown;
+  verified?: unknown;
+  published?: unknown;
+  hidden?: unknown;
   created_at?: unknown;
   source?: unknown;
   transparency_badges?: unknown;
 };
 
-export function resolveJudgeMeProductId(
-  externalId: string,
-  map: Record<string, number> = JUDGEME_PRODUCT_ID_BY_EXTERNAL_ID,
-): number | null {
-  if (!externalId) return null;
-  const id = map[externalId];
-  return typeof id === 'number' && Number.isFinite(id) ? id : null;
+const VERIFIED_BUYER_STATUSES = new Set([
+  'verified-purchase',
+  'confirmed-buyer',
+]);
+
+export function parseJudgeMeProductId(payload: unknown): number | null {
+  if (!payload || typeof payload !== 'object') return null;
+  const id = (payload as { product?: { id?: unknown } }).product?.id;
+  return typeof id === 'number' && Number.isFinite(id) && id > 0 ? id : null;
+}
+
+export function isVisibleReview(review: JudgeMeReviewPayload): boolean {
+  if (review.hidden === true) return false;
+  if (review.published === false) return false;
+  return true;
+}
+
+export function isVerifiedBuyer(review: JudgeMeReviewPayload): boolean {
+  if (review.verified_buyer === true) return true;
+  return (
+    typeof review.verified === 'string' &&
+    VERIFIED_BUYER_STATUSES.has(review.verified)
+  );
 }
 
 export function isWrittenInShopApp(review: JudgeMeReviewPayload): boolean {
@@ -94,7 +108,7 @@ export function mapJudgeMeReview(raw: JudgeMeReviewPayload): ProductReview | nul
     body: text(raw.body),
     reviewerName,
     reviewerInitial: initialFrom(reviewerName, reviewerInitial),
-    verifiedBuyer: raw.verified_buyer === true,
+    verifiedBuyer: isVerifiedBuyer(raw),
     createdAt: text(raw.created_at),
     writtenInShopApp: isWrittenInShopApp(raw),
   };
@@ -108,7 +122,9 @@ export function mapJudgeMeReviews(payload: unknown): ProductReview[] {
   if (!Array.isArray(reviews)) return [];
   return reviews.flatMap((entry) => {
     if (!entry || typeof entry !== 'object') return [];
-    const mapped = mapJudgeMeReview(entry as JudgeMeReviewPayload);
+    const raw = entry as JudgeMeReviewPayload;
+    if (!isVisibleReview(raw)) return [];
+    const mapped = mapJudgeMeReview(raw);
     return mapped ? [mapped] : [];
   });
 }

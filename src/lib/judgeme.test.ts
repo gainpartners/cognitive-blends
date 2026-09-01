@@ -1,11 +1,28 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
+  isVerifiedBuyer,
+  isVisibleReview,
   isWrittenInShopApp,
   mapJudgeMeReview,
   mapJudgeMeReviews,
-  resolveJudgeMeProductId,
+  parseJudgeMeProductId,
 } from './judgeme-model';
+
+const apiReview = {
+  id: 1304048271,
+  title: null,
+  body: 'Great product, will buy again.',
+  rating: 5,
+  product_external_id: 9529568592136,
+  reviewer: { name: 'Dylan Carlos' },
+  source: 'shop-app',
+  curated: 'ok',
+  published: true,
+  hidden: false,
+  verified: 'verified-purchase',
+  created_at: '2026-08-21T09:20:57+00:00',
+};
 
 const widgetReview = {
   uuid: 'e0830fa5-3d67-52b3-a6aa-aaaaaaaaaaaa',
@@ -24,17 +41,39 @@ const widgetReview = {
   transparency_badges: ['review_written_in_shop_app'],
 };
 
-describe('resolveJudgeMeProductId', () => {
-  it('returns the mapped Judge.me id and never treats the Shopify id as a product_id', () => {
-    const shopifyId = '9529568592136';
-    const map = { [shopifyId]: 4242 };
-    assert.equal(resolveJudgeMeProductId(shopifyId, map), 4242);
-    assert.notEqual(resolveJudgeMeProductId(shopifyId, map), Number(shopifyId));
+describe('parseJudgeMeProductId', () => {
+  it('reads product.id from the lookup payload', () => {
+    assert.equal(parseJudgeMeProductId({ product: { id: 1974783192 } }), 1974783192);
   });
 
-  it('returns null for an unknown product so callers skip /reviews', () => {
-    assert.equal(resolveJudgeMeProductId('9529568592136', {}), null);
-    assert.equal(resolveJudgeMeProductId('', { '9529568592136': 1 }), null);
+  it('rejects missing or invalid ids', () => {
+    assert.equal(parseJudgeMeProductId(null), null);
+    assert.equal(parseJudgeMeProductId({ product: {} }), null);
+    assert.equal(parseJudgeMeProductId({ product: { id: -1 } }), null);
+    assert.equal(parseJudgeMeProductId({ product: { id: '1974783192' } }), null);
+  });
+});
+
+describe('isVerifiedBuyer', () => {
+  it('treats verified-purchase and confirmed-buyer as verified', () => {
+    assert.equal(isVerifiedBuyer({ verified: 'verified-purchase' }), true);
+    assert.equal(isVerifiedBuyer({ verified: 'confirmed-buyer' }), true);
+    assert.equal(isVerifiedBuyer({ verified_buyer: true }), true);
+  });
+
+  it('does not treat email or nothing as a verified buyer', () => {
+    assert.equal(isVerifiedBuyer({ verified: 'email' }), false);
+    assert.equal(isVerifiedBuyer({ verified: 'nothing' }), false);
+    assert.equal(isVerifiedBuyer({ verified: 'unconfirmed-buyer' }), false);
+  });
+});
+
+describe('isVisibleReview', () => {
+  it('drops hidden and unpublished API reviews', () => {
+    assert.equal(isVisibleReview({ published: true, hidden: false }), true);
+    assert.equal(isVisibleReview({ published: false, hidden: false }), false);
+    assert.equal(isVisibleReview({ published: true, hidden: true }), false);
+    assert.equal(isVisibleReview({}), true);
   });
 });
 
@@ -112,11 +151,32 @@ describe('mapJudgeMeReview', () => {
     assert.equal(mapped?.body, 'plain');
   });
 
-  it('maps a reviews payload and drops junk entries', () => {
-    const mapped = mapJudgeMeReviews({
-      reviews: [widgetReview, null, { rating: 5 }],
+  it('maps the live /api/v1/reviews field shape', () => {
+    const mapped = mapJudgeMeReview(apiReview);
+    assert.deepEqual(mapped, {
+      id: '1304048271',
+      rating: 5,
+      body: 'Great product, will buy again.',
+      reviewerName: 'Dylan Carlos',
+      reviewerInitial: 'D',
+      verifiedBuyer: true,
+      createdAt: '2026-08-21T09:20:57+00:00',
+      writtenInShopApp: true,
     });
-    assert.equal(mapped.length, 1);
+  });
+
+  it('maps a reviews payload and drops junk and unpublished entries', () => {
+    const mapped = mapJudgeMeReviews({
+      reviews: [
+        widgetReview,
+        apiReview,
+        { ...apiReview, id: 2, published: false, curated: 'spam' },
+        null,
+        { rating: 5 },
+      ],
+    });
+    assert.equal(mapped.length, 2);
     assert.equal(mapped[0]?.reviewerName, 'Martin');
+    assert.equal(mapped[1]?.reviewerName, 'Dylan Carlos');
   });
 });

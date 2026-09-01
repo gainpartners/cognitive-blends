@@ -1,10 +1,9 @@
 import 'server-only';
 import { JUDGEME_API_TOKEN, JUDGEME_SHOP_DOMAIN } from '@/lib/config/server';
 import {
-  JUDGEME_PRODUCT_ID_BY_EXTERNAL_ID,
   REVIEWS_PER_PAGE,
   mapJudgeMeReviews,
-  resolveJudgeMeProductId,
+  parseJudgeMeProductId,
   type ListReviewsResult,
 } from '@/lib/judgeme-model';
 import { errorFields, logger } from '@/lib/log';
@@ -12,19 +11,48 @@ import { errorFields, logger } from '@/lib/log';
 const log = logger('judgeme');
 
 export type { ListReviewsResult, ProductReview } from '@/lib/judgeme-model';
-export { resolveJudgeMeProductId } from '@/lib/judgeme-model';
 
 const REQUEST_TIMEOUT_MS = 10_000;
 const REVALIDATE_SECONDS = 3600;
 
-function reviewsUrl(productId: number): URL {
-  const url = new URL('https://judge.me/api/v1/reviews');
+function judgeMeUrl(path: string, params: Record<string, string>): URL {
+  const url = new URL(`https://judge.me/api/v1${path}`);
   url.searchParams.set('api_token', JUDGEME_API_TOKEN);
   url.searchParams.set('shop_domain', JUDGEME_SHOP_DOMAIN);
-  url.searchParams.set('product_id', String(productId));
-  url.searchParams.set('per_page', String(REVIEWS_PER_PAGE));
-  url.searchParams.set('page', '1');
+  for (const [key, value] of Object.entries(params)) {
+    url.searchParams.set(key, value);
+  }
   return url;
+}
+
+async function lookupJudgeMeProductId(externalId: string): Promise<number | null> {
+  const url = judgeMeUrl('/products/-1', { external_id: externalId });
+  log.debug('product id lookup', { externalId, url: logUrl(url) });
+  try {
+    const response = await fetch(url, {
+      cache: 'force-cache',
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+    });
+    if (!response.ok) {
+      const body = await response.text().catch(() => '');
+      log.warn('product id lookup http error', {
+        externalId,
+        status: response.status,
+        body: body.slice(0, 300),
+      });
+      return null;
+    }
+    const productId = parseJudgeMeProductId(await response.json());
+    if (!productId) {
+      log.warn('product id lookup missing id', { externalId });
+      return null;
+    }
+    log.debug('product id lookup ok', { externalId, productId });
+    return productId;
+  } catch (error) {
+    log.warn('product id lookup threw', { externalId, ...errorFields(error) });
+    return null;
+  }
 }
 
 function logUrl(url: URL): string {
@@ -47,22 +75,27 @@ function skip(
 }
 
 export async function listReviews(externalId: string): Promise<ListReviewsResult> {
-  const productId = resolveJudgeMeProductId(externalId);
-
   if (!JUDGEME_API_TOKEN) {
-    return skip('missing-token', { externalId, productId });
+    return skip('missing-token', { externalId });
   }
   if (!JUDGEME_SHOP_DOMAIN) {
-    return skip('missing-shop-domain', { externalId, productId });
+    return skip('missing-shop-domain', { externalId });
   }
-  if (!productId) {
-    return skip('missing-product-id', {
-      externalId,
-      mappedIds: Object.keys(JUDGEME_PRODUCT_ID_BY_EXTERNAL_ID),
-    });
+  if (!externalId) {
+    return skip('missing-external-id', {});
   }
 
-  const url = reviewsUrl(productId);
+  const productId = await lookupJudgeMeProductId(externalId);
+  if (!productId) {
+    return skip('missing-product-id', { externalId });
+  }
+
+  const url = judgeMeUrl('/reviews', {
+    product_id: String(productId),
+    per_page: String(REVIEWS_PER_PAGE),
+    page: '1',
+    published: 'true',
+  });
   log.debug('listReviews fetch', {
     externalId,
     productId,

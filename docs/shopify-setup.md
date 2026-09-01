@@ -90,15 +90,15 @@ JUDGEME_API_TOKEN=
 JUDGEME_SHOP_DOMAIN=zzqvvg-ma.myshopify.com
 ```
 
-Summary stars and count come from Storefront metafields `reviews.rating` and `reviews.rating_count`. The review list is `GET https://judge.me/api/v1/reviews` with Judge.me’s **internal** `product_id`, not the Shopify id. `/reviews` with the wrong id falls back to every review on the shop.
+Summary stars and count come from Storefront metafields `reviews.rating` and `reviews.rating_count`. Shopify does not store Judge.me’s internal product id.
 
-Resolve Shopify `external_id` `9529568592136` (ThriveOne) once:
+The list is loaded automatically:
 
-```bash
-npm run probe:reviews
-```
+1. Storefront product `id` (`gid://shopify/Product/…`) → numeric Shopify id
+2. `GET https://judge.me/api/v1/products/-1?external_id=…` → Judge.me `product_id` (fetch-cached; the id does not change)
+3. `GET https://judge.me/api/v1/reviews?product_id=…` → published reviews (revalidated hourly)
 
-Paste the printed map entry into `src/lib/judgeme-model.ts`. The app does not look the id up on page load. The list is server-cached and revalidated hourly.
+Never pass the Shopify id as `product_id` on `/reviews` — Judge.me then returns every review on the shop.
 
 ---
 
