@@ -9,6 +9,10 @@ export type ProductCardData = {
   image?: { url: string; altText?: string | null; width?: number; height?: number } | null;
   amount: string;
   currencyCode: string;
+  compareAtAmount?: string | null;
+  subscribeAmount?: string | null;
+  oneTimeLabel?: string;
+  subscribeLabel?: string;
   rating?: number | null;
   ratingCount?: number | null;
 };
@@ -28,7 +32,25 @@ export function ProductCard({ product }: { product: ProductCardData }) {
       </div>
       <div className="product-card__body">
         <h2>{product.title}</h2>
-        <Price amount={product.amount} currencyCode={product.currencyCode} />
+        <div className="product-card__price">
+          {product.oneTimeLabel ? (
+            <span className="product-card__price-label">{product.oneTimeLabel}</span>
+          ) : null}
+          {product.compareAtAmount ? (
+            <span className="product-card__compare">
+              <Price amount={product.compareAtAmount} currencyCode={product.currencyCode} />
+            </span>
+          ) : null}
+          <Price amount={product.amount} currencyCode={product.currencyCode} />
+        </div>
+        {product.subscribeAmount ? (
+          <div className="product-card__subscribe">
+            {product.subscribeLabel ? (
+              <span className="product-card__price-label">{product.subscribeLabel}</span>
+            ) : null}
+            <Price amount={product.subscribeAmount} currencyCode={product.currencyCode} />
+          </div>
+        ) : null}
         <StarRating value={product.rating ?? null} count={product.ratingCount} />
       </div>
     </Link>

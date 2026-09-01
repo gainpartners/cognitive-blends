@@ -1,17 +1,48 @@
-export const PRODUCTS_QUERY = `#graphql
-  query Products {
-    products(first: 20) {
+const PRODUCT_CARD_FIELDS = `#graphql
+  fragment ProductCardFields on Product {
+    id
+    handle
+    title
+    featuredImage { url altText width height }
+    priceRange { minVariantPrice { amount currencyCode } }
+    rating: metafield(namespace: "reviews", key: "rating") { value }
+    ratingCount: metafield(namespace: "reviews", key: "rating_count") { value }
+    variants(first: 1) {
       nodes {
-        id
-        handle
-        title
-        featuredImage { url altText width height }
-        priceRange { minVariantPrice { amount currencyCode } }
-        rating: metafield(namespace: "reviews", key: "rating") { value }
-        ratingCount: metafield(namespace: "reviews", key: "rating_count") { value }
+        price { amount currencyCode }
+        compareAtPrice { amount currencyCode }
+        sellingPlanAllocations(first: 10) {
+          nodes {
+            sellingPlan { id name }
+            priceAdjustments {
+              price { amount currencyCode }
+              compareAtPrice { amount currencyCode }
+            }
+          }
+        }
       }
     }
   }
+`;
+
+export const PRODUCTS_QUERY = `#graphql
+  query Products {
+    products(first: 20) {
+      nodes { ...ProductCardFields }
+    }
+  }
+  ${PRODUCT_CARD_FIELDS}
+`;
+
+export const FRONTPAGE_QUERY = `#graphql
+  query Frontpage {
+    collection(handle: "frontpage") {
+      products(first: 12) {
+        nodes { ...ProductCardFields }
+      }
+    }
+  }
+  ${PRODUCT_CARD_FIELDS}
 `;
 
 export const PRODUCT_QUERY = `#graphql

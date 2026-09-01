@@ -65,6 +65,15 @@ export type ProductListItem = {
   priceRange: { minVariantPrice: Money };
   rating?: { value: string } | null;
   ratingCount?: { value: string } | null;
+  variants?: {
+    nodes: {
+      price: Money;
+      compareAtPrice?: Money | null;
+      sellingPlanAllocations: {
+        nodes: SellingPlanAllocation[];
+      };
+    }[];
+  };
 };
 
 export type CartLine = {

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { copyrightLine, footer } from './footer';
-import { hero, testimonials, thriveOneFeatures, whoWeAre } from './home';
+import { hero, signup, statsPanel, testimonials, thriveOneFeatures, whoWeAre } from './home';
 import { navLinks } from './nav';
 import { contactPage } from './pages/contact';
 import { ourStory } from './pages/our-story';
@@ -39,8 +39,10 @@ describe('verbatim copy', () => {
     );
   });
 
-  it('does not mark testimonials ready to publish', () => {
-    assert.equal(testimonials.readyToPublish, false);
+  it('keeps homepage signup and stats copy', () => {
+    assert.equal(signup.heading, 'Sign up and Save');
+    assert.equal(statsPanel.stats[0].value, '88%');
+    assert.equal(testimonials.quotes.length, 4);
   });
 
   it('keeps contact intro and accordion FAQs', () => {

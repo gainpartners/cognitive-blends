@@ -1,20 +1,17 @@
-'use client';
-
-import type { FormEvent } from 'react';
+import { Button } from '@/components/ui/Button';
 import { Field } from '@/components/ui/Field';
 import { footer } from '@/content/footer';
 
 export function FooterSubscribe() {
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-  }
-
   return (
-    <form className="footer-subscribe" onSubmit={onSubmit}>
+    <form className="footer-subscribe" action="/contact" method="get">
       <p>{footer.subscribePrompt}</p>
-      <Field label="Email">
-        <input type="email" name="email" autoComplete="email" />
-      </Field>
+      <div className="footer-subscribe__row">
+        <Field label={footer.emailLabel}>
+          <input type="email" name="email" autoComplete="email" />
+        </Field>
+        <Button type="submit">{footer.subscribe}</Button>
+      </div>
     </form>
   );
 }

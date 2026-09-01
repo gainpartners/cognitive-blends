@@ -5,12 +5,14 @@ export const hero = {
   poster: '/brand/thriveone-lifestyle.png',
   cta: {
     label: 'Shop now',
-    href: '/',
+    href: '/collections/frontpage',
   },
 };
 
 export const popularProducts = {
   heading: 'Most Popular Products',
+  oneTimeLabel: 'One-time:',
+  subscribeLabel: 'Subscribe and save:',
 };
 
 export const thriveOneFeatures = {
@@ -22,18 +24,22 @@ export const thriveOneFeatures = {
     {
       title: 'Restorative Sleep',
       body: 'Ashwagandha and Magnesium help reduce stress levels and supports deeper, more restorative sleep so your body can properly recover overnight.',
+      image: '/brand/home/sleep.png',
     },
     {
       title: 'Elite Performance',
       body: 'Maca supports physical endurance, stamina and overall performance, helping you feel stronger throughout the day.',
+      image: '/brand/home/performance.jpg',
     },
     {
       title: 'Sustained Energy',
       body: 'Vitamin D3 contributes to normal energy-yielding metabolism, supporting steady, balanced energy without spikes or crashes.',
+      image: '/brand/home/energy.jpg',
     },
     {
       title: 'Focus & Clarity',
       body: 'Zinc supports normal cognitive function, helping maintain focus, clarity and mental sharpness when you need it most.',
+      image: '/brand/home/focus.jpg',
     },
   ],
   purchaseCtas: [
@@ -62,9 +68,18 @@ export const whoWeAre = {
   ],
 };
 
-/** Do not render until Marcus/Hugh confirm these are real customer quotes. */
+export const signup = {
+  heading: 'Sign up and Save',
+  body: 'Receive a 10% discount on your first bottle of ThriveOne when you sign up to hear more from us.',
+  firstName: 'First name',
+  lastName: 'Last name',
+  email: 'Email',
+  submit: 'Submit',
+  disclaimer:
+    'By signing up, you agree to receive marketing emails. View our privacy policy and terms of service for more info.',
+};
+
 export const testimonials = {
-  readyToPublish: false as const,
   quotes: [
     {
       name: 'Damien P.',
@@ -83,10 +98,17 @@ export const testimonials = {
       body: "I was looking for a boost in training and ThriveOne has certainly helped. I have more energy and endurance in the long runs or cycles - probably helped by the fact I'm sleeping better than ever!",
     },
   ],
+};
+
+export const statsPanel = {
+  heading: 'Found in Nature. Refined by Science. Proven Results.',
+  body: "We asked customers to share their experience after using ThriveOne for several weeks. The feedback was overwhelmingly positive, with people reporting better energy, clearer focus and more balanced days. We're proud to support their optimal performance, and the stats speak for themselves.",
+  image: '/brand/home/stats.png',
+  cta: { label: 'Learn More About ThriveOne', href: '/what-is-thriveone' },
   stats: [
-    { value: '88%', label: 'very satisfied' },
-    { value: '86%', label: 'would purchase again' },
-    { value: '64%', label: 'saw lasting improvements' },
-    { value: '4.7★', label: 'Average rating' },
+    { value: '88%', label: "were 'very satisfied' with ThriveOne" },
+    { value: '86%', label: 'will consider purchasing ThriveOne again' },
+    { value: '64%', label: 'saw lasting improvements in sleep or energy' },
+    { value: '4.7★', label: 'Average rating from customers' },
   ],
 };

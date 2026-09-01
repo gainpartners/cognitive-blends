@@ -1,5 +1,7 @@
 export const footer = {
   subscribePrompt: 'Subscribe to join our mailing list.',
+  subscribe: 'Subscribe',
+  emailLabel: 'Email',
   instagram: {
     label: 'Instagram',
     href: 'https://instagram.com/cognitiveblends',

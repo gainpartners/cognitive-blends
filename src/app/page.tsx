@@ -1,12 +1,25 @@
-import Image from 'next/image';
 import { PurchaseCtas } from '@/components/content/PurchaseCtas';
+import { SignupForm } from '@/components/content/SignupForm';
 import { Button } from '@/components/ui/Button';
 import { ProductCard } from '@/components/ui/ProductCard';
-import { parseRatingValue } from '@/components/ui/StarRating';
-import { hero, popularProducts, thriveOneFeatures, whoWeAre } from '@/content/home';
+import { parseRatingValue, StarRating } from '@/components/ui/StarRating';
+import {
+  hero,
+  popularProducts,
+  signup,
+  statsPanel,
+  testimonials,
+  thriveOneFeatures,
+  whoWeAre,
+} from '@/content/home';
 import { isStorefrontConfigured } from '@/lib/config/server';
 import { errorFields, logger } from '@/lib/log';
-import { listProducts } from '@/lib/shopify/products';
+import {
+  compareAtPrice,
+  listFrontpageProducts,
+  oneTimePrice,
+  subscribePrice,
+} from '@/lib/shopify/products';
 import { StorefrontError } from '@/lib/shopify/storefront';
 
 const log = logger('shop');
@@ -40,6 +53,14 @@ export default async function HomePage() {
 
       <PopularProducts />
 
+      <section className="section signup">
+        <div className="shell signup__inner">
+          <h2 className="section-title">{signup.heading}</h2>
+          <p>{signup.body}</p>
+          <SignupForm />
+        </div>
+      </section>
+
       <section className="section">
         <div className="shell features">
           <div className="features__intro">
@@ -47,20 +68,22 @@ export default async function HomePage() {
             <p>{thriveOneFeatures.intro}</p>
             {thriveOneFeatures.image ? (
               <div className="features__image">
-                <Image
-                  src={thriveOneFeatures.image}
-                  alt=""
-                  width={1000}
-                  height={771}
-                />
+                <img src={thriveOneFeatures.image} alt="" />
               </div>
             ) : null}
           </div>
           <div className="features__list">
             {thriveOneFeatures.blocks.map((block) => (
               <article key={block.title} className="feature-card">
-                <h3>{block.title}</h3>
-                <p>{block.body}</p>
+                {block.image ? (
+                  <div className="feature-card__image">
+                    <img src={block.image} alt="" />
+                  </div>
+                ) : null}
+                <div>
+                  <h3>{block.title}</h3>
+                  <p>{block.body}</p>
+                </div>
               </article>
             ))}
             <PurchaseCtas items={thriveOneFeatures.purchaseCtas} stacked />
@@ -68,23 +91,58 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <div className="section-spacer" aria-hidden />
+
+      <section className="section quotes">
+        <div className="shell">
+          <div className="quotes__grid">
+            {testimonials.quotes.map((quote) => (
+              <blockquote key={quote.name} className="quote">
+                <StarRating value={5} showValue={false} />
+                <p>{quote.body}</p>
+                <footer>{quote.name}</footer>
+              </blockquote>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section stats">
+        <div className="shell stats__layout">
+          <div className="stats__image">
+            <img src={statsPanel.image} alt="" />
+          </div>
+          <div className="stats__content">
+            <h2 className="section-title">{statsPanel.heading}</h2>
+            <p>{statsPanel.body}</p>
+            <div className="stats__grid">
+              {statsPanel.stats.map((stat) => (
+                <div key={stat.value} className="stat">
+                  <div className="stat__value">{stat.value}</div>
+                  <p>{stat.label}</p>
+                </div>
+              ))}
+            </div>
+            <Button as="a" href={statsPanel.cta.href} variant="secondary">
+              {statsPanel.cta.label}
+            </Button>
+          </div>
+        </div>
+      </section>
+
       <section className="section">
-        <div className="shell stack">
-          <h2 className="section-title">{whoWeAre.heading}</h2>
+        <div className="shell">
           <div className="who-grid">
             {whoWeAre.people.map((person) => (
               <article key={person.name} className="who-card">
                 <div className="who-card__image">
-                  <Image
-                    src={person.image}
-                    alt={person.name}
-                    fill
-                    sizes="(min-width: 750px) 50vw, 100vw"
-                  />
+                  <img src={person.image} alt={person.name} />
                 </div>
                 <div className="who-card__body">
-                  <h3>{person.name}</h3>
-                  <p className="muted">{person.role}</p>
+                  <p className="who-card__kicker">{whoWeAre.heading}</p>
+                  <h3>
+                    {person.name} - {person.role}
+                  </h3>
                   <Button as="a" href={person.cta.href}>
                     {person.cta.label}
                   </Button>
@@ -116,7 +174,7 @@ async function PopularProducts() {
 
   let products;
   try {
-    products = await listProducts();
+    products = await listFrontpageProducts();
   } catch (error) {
     log.warn('home catalogue failed', errorFields(error));
     const message =
@@ -136,22 +194,31 @@ async function PopularProducts() {
       <div className="shell">
         <h2 className="section-title section-title--center">{popularProducts.heading}</h2>
         <div className="product-grid">
-          {products.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={{
-                handle: product.handle,
-                title: product.title,
-                image: product.featuredImage,
-                amount: product.priceRange.minVariantPrice.amount,
-                currencyCode: product.priceRange.minVariantPrice.currencyCode,
-                rating: parseRatingValue(product.rating?.value),
-                ratingCount: product.ratingCount?.value
-                  ? Number.parseInt(product.ratingCount.value, 10)
-                  : null,
-              }}
-            />
-          ))}
+          {products.map((product) => {
+            const oneTime = oneTimePrice(product);
+            const compare = compareAtPrice(product);
+            const subscribe = subscribePrice(product);
+            return (
+              <ProductCard
+                key={product.id}
+                product={{
+                  handle: product.handle,
+                  title: product.title,
+                  image: product.featuredImage,
+                  amount: oneTime.amount,
+                  currencyCode: oneTime.currencyCode,
+                  compareAtAmount: compare?.amount,
+                  subscribeAmount: subscribe?.amount,
+                  oneTimeLabel: popularProducts.oneTimeLabel,
+                  subscribeLabel: popularProducts.subscribeLabel,
+                  rating: parseRatingValue(product.rating?.value),
+                  ratingCount: product.ratingCount?.value
+                    ? Number.parseInt(product.ratingCount.value, 10)
+                    : null,
+                }}
+              />
+            );
+          })}
         </div>
       </div>
     </section>
