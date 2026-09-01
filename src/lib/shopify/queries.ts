@@ -30,7 +30,7 @@ export const PRODUCT_QUERY = `#graphql
           title
           availableForSale
           price { amount currencyCode }
-          sellingPlanAllocations(first: 10) {
+          sellingPlanAllocations(first: 20) {
             nodes {
               sellingPlan { id }
               priceAdjustments {
@@ -46,13 +46,26 @@ export const PRODUCT_QUERY = `#graphql
         nodes {
           name
           appName
-          sellingPlans(first: 10) {
+          sellingPlans(first: 20) {
             nodes {
               id
               name
               description
               recurringDeliveries
               options { name value }
+              billingPolicy {
+                ... on SellingPlanRecurringBillingPolicy {
+                  interval
+                  intervalCount
+                }
+              }
+              priceAdjustments {
+                adjustmentValue {
+                  ... on SellingPlanPercentagePriceAdjustment {
+                    adjustmentPercentage
+                  }
+                }
+              }
             }
           }
         }

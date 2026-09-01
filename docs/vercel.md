@@ -2,8 +2,6 @@
 
 The app is a standard Next.js App Router project. Vercel is the host. Shopify stays the backend.
 
-A Vercel HTTPS URL also solves Customer Account OAuth (Shopify rejects `localhost`). You can skip ngrok once a Preview or Production URL exists.
-
 ---
 
 ## 1. Push the repo
@@ -33,7 +31,7 @@ Vercel → Project → **Settings → Environment Variables**.
 
 Add each of these. Apply to **Production**, **Preview**, and **Development** unless noted.
 
-`NEXT_PUBLIC_*` is baked in at **build** time. After you change it, you must **Redeploy**.
+Do **not** set `CUSTOMER_ACCOUNT_API_CLIENT_ID`, `CUSTOMER_ACCOUNT_API_VERSION`, or `NEXT_PUBLIC_APP_URL`. This app does not call the Customer Account API. If those are already on the project, you can delete them.
 
 ### Shopify Storefront
 
@@ -43,22 +41,19 @@ Add each of these. Apply to **Production**, **Preview**, and **Development** unl
 | `SHOPIFY_STOREFRONT_API_TOKEN` | Headless **public** storefront token | **Not** Admin `shpat_`. Hex string from Headless → Storefront API → Manage |
 | `SHOPIFY_STOREFRONT_API_VERSION` | `2025-10` | Pin a stable version |
 
-### Customer Account OAuth
+### Account link
 
 | Name | Example | Notes |
 | --- | --- | --- |
-| `SHOPIFY_SHOP_ID` | numeric id from Headless Customer Account endpoints | From `https://shopify.com/authentication/{id}/…` |
-| `CUSTOMER_ACCOUNT_API_CLIENT_ID` | Headless Customer Account **Client ID** | Public client, no secret |
-| `CUSTOMER_ACCOUNT_API_VERSION` | `2025-10` | |
-| `NEXT_PUBLIC_APP_URL` | `https://cognitive-blends.vercel.app` | Real host, no trailing slash. Do **not** paste `YOUR-PROJECT.vercel.app` |
+| `SHOPIFY_SHOP_ID` | numeric id | From `https://shopify.com/authentication/{id}/…`. Builds `https://shopify.com/{id}/account` |
 
-### Reviews and native plans
+### Reviews and Appstle plans
 
 | Name | Example | Notes |
 | --- | --- | --- |
 | `JUDGEME_API_TOKEN` | Judge.me private token | Server only |
 | `JUDGEME_SHOP_DOMAIN` | `zzqvvg-ma.myshopify.com` | |
-| `NATIVE_SUBSCRIPTIONS_APP_NAME` | from `npm run probe:plans` | Shopify native `appName` only. Empty = one-time purchase only |
+| `APPSTLE_SUBSCRIPTIONS_APP_NAME` | `appstle` | Default is `appstle`. New subscribers only |
 
 ### Preview gate
 
@@ -76,33 +71,7 @@ openssl rand -base64 32
 
 ---
 
-## 4. Shopify callback for the Vercel URL
-
-Headless → **Customer Account API → Manage** → Callback URL(s). Add the **real** Vercel URL, not the `YOUR-PROJECT` placeholder:
-
-```
-https://cognitive-blends.vercel.app/auth/callback
-```
-
-Logout URL:
-
-```
-https://cognitive-blends.vercel.app/
-```
-
-Set `NEXT_PUBLIC_APP_URL=https://cognitive-blends.vercel.app` (no trailing slash) and **Redeploy**. `NEXT_PUBLIC_*` is baked in at build time.
-
-You can keep a second callback for ngrok while developing locally. Each URL must be listed exactly.
-
-If you use Vercel Preview URLs (`…-git-….vercel.app`), either:
-
-- add each preview host as a callback (impractical), or
-- only test login on **Production**, or
-- use a fixed Preview alias.
-
----
-
-## 5. Deploy
+## 4. Deploy
 
 **Deployments → Deploy**, or push to `main`.
 
@@ -112,21 +81,21 @@ If the shop says the Storefront token is an Admin `shpat_`, the Vercel env still
 
 ---
 
-## 6. After deploy
+## 5. After deploy
 
 ```bash
 # Local, against the same Headless token you put on Vercel
 npm run probe:plans
 ```
 
-Set `NATIVE_SUBSCRIPTIONS_APP_NAME` on Vercel from that output, then Redeploy.
+`APPSTLE_SUBSCRIPTIONS_APP_NAME` defaults to `appstle` if unset.
 
 Check:
 
 - Home lists products
-- `/products/thriveone` loads
+- `/products/thriveone` offers one-time, Appstle monthly 15%, Appstle quarterly 20%
 - Add to cart → Checkout opens Shopify
-- `/login` (on the Vercel HTTPS URL) completes Shopify customer login
+- **Account** opens Shopify’s hosted sign-in (`shopify.com/…/account`)
 - `/brand` still asks for the preview password
 
 ---
@@ -134,7 +103,5 @@ Check:
 ## Going public later
 
 1. Add the production domain in Vercel.
-2. Set `NEXT_PUBLIC_APP_URL=https://that-domain` and Redeploy.
-3. Add that origin’s `/auth/callback` in Headless Customer Account.
-4. Set `SITE_ACCESS=public` and Redeploy.
-5. `/brand` remains password-gated.
+2. Set `SITE_ACCESS=public` and Redeploy.
+3. `/brand` remains password-gated.

@@ -8,7 +8,8 @@ import {
   CART_QUERY,
   PRODUCT_QUERY,
 } from './queries';
-import { isNativeSellingPlanId } from './selling-plans';
+import { APPSTLE_SUBSCRIPTIONS_APP_NAME } from '@/lib/config/server';
+import { isAllowedSellingPlanId } from './selling-plans';
 import type { Cart, Product } from './types';
 
 const CART_COOKIE = 'cb_cart';
@@ -59,9 +60,10 @@ export async function addToCart({
       PRODUCT_QUERY,
       { handle: productHandle },
     );
-    const allowed = isNativeSellingPlanId(
+    const allowed = isAllowedSellingPlanId(
       data.product?.sellingPlanGroups.nodes,
       sellingPlanId,
+      APPSTLE_SUBSCRIPTIONS_APP_NAME,
     );
     if (!allowed) {
       throw new StorefrontError('That subscription plan is not available', 400);

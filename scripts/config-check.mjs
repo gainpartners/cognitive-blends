@@ -12,7 +12,12 @@ function parseDeclarations() {
   const found = new Map();
 
   for (const file of ['public.ts', 'server.ts']) {
-    const source = readFileSync(new URL(`../src/lib/config/${file}`, HERE), 'utf8');
+    let source;
+    try {
+      source = readFileSync(new URL(`../src/lib/config/${file}`, HERE), 'utf8');
+    } catch {
+      continue;
+    }
     const pattern =
       /declare\(\s*'([A-Z][A-Z0-9_]*)'\s*,[\s\S]*?'(required|defaulted|feature)'\s*,?\s*\)/g;
 

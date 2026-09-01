@@ -31,24 +31,6 @@ export const SHOPIFY_SHOP_ID = str(
   '',
 );
 
-export const CUSTOMER_ACCOUNT_API_CLIENT_ID = str(
-  declare(
-    'CUSTOMER_ACCOUNT_API_CLIENT_ID',
-    process.env.CUSTOMER_ACCOUNT_API_CLIENT_ID,
-    'required',
-  ),
-  '',
-);
-
-export const CUSTOMER_ACCOUNT_API_VERSION = str(
-  declare(
-    'CUSTOMER_ACCOUNT_API_VERSION',
-    process.env.CUSTOMER_ACCOUNT_API_VERSION,
-    'defaulted',
-  ),
-  '2025-10',
-);
-
 export const JUDGEME_API_TOKEN = str(
   declare('JUDGEME_API_TOKEN', process.env.JUDGEME_API_TOKEN, 'required'),
   '',
@@ -59,13 +41,13 @@ export const JUDGEME_SHOP_DOMAIN = str(
   SHOPIFY_STORE_DOMAIN,
 );
 
-export const NATIVE_SUBSCRIPTIONS_APP_NAME = str(
+export const APPSTLE_SUBSCRIPTIONS_APP_NAME = str(
   declare(
-    'NATIVE_SUBSCRIPTIONS_APP_NAME',
-    process.env.NATIVE_SUBSCRIPTIONS_APP_NAME,
-    'feature',
+    'APPSTLE_SUBSCRIPTIONS_APP_NAME',
+    process.env.APPSTLE_SUBSCRIPTIONS_APP_NAME,
+    'defaulted',
   ),
-  '',
+  'appstle',
 );
 
 export type SiteAccess = 'public' | 'preview' | 'coming-soon';
@@ -90,16 +72,14 @@ export function isStorefrontConfigured(): boolean {
   return SHOPIFY_STORE_DOMAIN.length > 0 && SHOPIFY_STOREFRONT_API_TOKEN.length > 0;
 }
 
-export function isCustomerAccountConfigured(): boolean {
-  return SHOPIFY_SHOP_ID.length > 0 && CUSTOMER_ACCOUNT_API_CLIENT_ID.length > 0;
-}
-
 export function storefrontEndpoint(): string {
   return `https://${SHOPIFY_STORE_DOMAIN}/api/${SHOPIFY_STOREFRONT_API_VERSION}/graphql.json`;
 }
 
-export function customerAccountGraphqlEndpoint(): string {
-  return `https://shopify.com/${SHOPIFY_SHOP_ID}/account/customer/api/${CUSTOMER_ACCOUNT_API_VERSION}/graphql`;
+/** Shopify-hosted new customer accounts. Same destination as the live site Account link. */
+export function shopifyHostedAccountUrl(): string | null {
+  if (!SHOPIFY_SHOP_ID) return null;
+  return `https://shopify.com/${SHOPIFY_SHOP_ID}/account`;
 }
 
 

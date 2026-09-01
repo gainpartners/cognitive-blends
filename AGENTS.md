@@ -10,8 +10,9 @@ Headless storefront. Shopify is the system of record. This app is a thin Next.js
 
 ## Rules
 
-- Native Shopify subscriptions only. Filter `sellingPlanGroups` by `NATIVE_SUBSCRIPTIONS_APP_NAME`. Ignore Appstle. Re-check plan IDs on add-to-cart.
-- No Admin API. No Hydrogen. No Bootstrap. No Tailwind. No tracking.
+- New subscribers: Appstle selling plans only. Do not offer native Shopify Subscriptions plans. Never show app names. Re-check plan IDs on add-to-cart.
+- Account is Shopify’s hosted customer accounts (`https://shopify.com/{shop_id}/account`). Do not call Customer Account API. Do not build pause/cancel UI. Appstle subscribers keep Appstle’s email portal.
+- No Admin API. No Customer Account API. No Hydrogen. No Bootstrap. No Tailwind. No tracking.
 - Nothing outside `src/lib/config/` reads `process.env` except `NODE_ENV`.
 - Shop UI composes `src/components/ui`. Do not add a one-off button style on a page.
 - Tokens only in `src/app/globals.css` `:root`. Fonts only from `layout.tsx`.

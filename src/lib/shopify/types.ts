@@ -16,6 +16,8 @@ export type SellingPlan = {
   description?: string | null;
   recurringDeliveries?: boolean;
   options: { name: string; value: string }[];
+  billingPolicy?: { interval: string; intervalCount: number } | null;
+  priceAdjustments?: { adjustmentValue?: { adjustmentPercentage?: number } }[];
 };
 
 export type SellingPlanGroup = {

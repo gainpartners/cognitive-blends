@@ -5,16 +5,18 @@ import { addToCartAction } from '@/app/actions/cart';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Price } from '@/components/ui/Price';
-import type { Product, SellingPlan } from '@/lib/shopify/types';
+import { customerFacingOptions } from '@/lib/shopify/selling-plans';
+import type { ProductVariant, SellingPlan } from '@/lib/shopify/types';
 
 export function PurchaseForm({
-  product,
-  nativePlans,
+  productHandle,
+  variant,
+  plans,
 }: {
-  product: Product;
-  nativePlans: SellingPlan[];
+  productHandle: string;
+  variant: ProductVariant | undefined;
+  plans: SellingPlan[];
 }) {
-  const variant = product.variants.nodes[0];
   const [planId, setPlanId] = useState('');
   const [pending, setPending] = useState(false);
   const [error, setError] = useState('');
@@ -44,7 +46,7 @@ export function PurchaseForm({
   return (
     <form action={onSubmit} className="stack">
       <input type="hidden" name="merchandiseId" value={variant.id} />
-      <input type="hidden" name="productHandle" value={product.handle} />
+      <input type="hidden" name="productHandle" value={productHandle} />
       <input type="hidden" name="sellingPlanId" value={planId} />
 
       <Price amount={money.amount} currencyCode={money.currencyCode} size="lg" />
@@ -63,7 +65,7 @@ export function PurchaseForm({
           </span>
         </label>
 
-        {nativePlans.map((plan) => (
+        {plans.map((plan) => (
           <label
             key={plan.id}
             className={planId === plan.id ? 'is-selected' : undefined}
@@ -77,7 +79,7 @@ export function PurchaseForm({
             <span>
               <Badge tone="subscribe">Subscribe</Badge>
               <div>{plan.name}</div>
-              {plan.options.map((option) => (
+              {customerFacingOptions(plan).map((option) => (
                 <div key={option.name} className="muted">
                   {option.name}: {option.value}
                 </div>

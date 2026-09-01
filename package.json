@@ -9,7 +9,7 @@
     "lint": "eslint",
     "config:check": "node scripts/config-check.mjs",
     "probe:plans": "tsx scripts/probe-selling-plans.ts",
-    "probe:customer": "tsx scripts/probe-customer-api.ts"
+    "test": "tsx --test src/lib/shopify/selling-plans.test.ts"
   },
   "dependencies": {
     "jose": "^6.2.10",

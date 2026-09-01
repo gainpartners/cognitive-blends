@@ -3,10 +3,10 @@ import { notFound } from 'next/navigation';
 import { parseRatingValue, StarRating } from '@/components/ui/StarRating';
 import { PurchaseForm } from '@/components/shop/PurchaseForm';
 import { Reviews } from '@/components/shop/Reviews';
-import { isStorefrontConfigured } from '@/lib/config/server';
+import { APPSTLE_SUBSCRIPTIONS_APP_NAME, isStorefrontConfigured } from '@/lib/config/server';
 import { listReviews } from '@/lib/judgeme';
 import { getProduct } from '@/lib/shopify/products';
-import { nativeSellingPlanGroup } from '@/lib/shopify/selling-plans';
+import { purchasePlans } from '@/lib/shopify/selling-plans';
 import { productNumericId } from '@/lib/utils';
 
 export default async function ProductPage({
@@ -19,7 +19,22 @@ export default async function ProductPage({
   const product = await getProduct(handle);
   if (!product) notFound();
 
-  const native = nativeSellingPlanGroup(product.sellingPlanGroups.nodes);
+  const plans = purchasePlans(
+    product.sellingPlanGroups.nodes,
+    APPSTLE_SUBSCRIPTIONS_APP_NAME,
+  );
+  const planIds = new Set(plans.map((plan) => plan.id));
+  const rawVariant = product.variants.nodes[0];
+  const variant = rawVariant
+    ? {
+        ...rawVariant,
+        sellingPlanAllocations: {
+          nodes: rawVariant.sellingPlanAllocations.nodes.filter((node) =>
+            planIds.has(node.sellingPlan.id),
+          ),
+        },
+      }
+    : undefined;
   const rating = parseRatingValue(product.rating?.value);
   const ratingCount = product.ratingCount?.value
     ? Number.parseInt(product.ratingCount.value, 10)
@@ -47,8 +62,9 @@ export default async function ProductPage({
           </h1>
           <StarRating value={rating} count={ratingCount} />
           <PurchaseForm
-            product={product}
-            nativePlans={native?.sellingPlans.nodes ?? []}
+            productHandle={product.handle}
+            variant={variant}
+            plans={plans}
           />
         </div>
       </div>

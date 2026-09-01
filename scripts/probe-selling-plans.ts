@@ -19,14 +19,28 @@ const query = `#graphql
     product(handle: "thriveone") {
       id
       title
-      rating: metafield(namespace: "reviews", key: "rating") { value type }
-      ratingCount: metafield(namespace: "reviews", key: "rating_count") { value }
       sellingPlanGroups(first: 10) {
         nodes {
           name
           appName
           sellingPlans(first: 20) {
-            nodes { id name }
+            nodes {
+              id
+              name
+              billingPolicy {
+                ... on SellingPlanRecurringBillingPolicy {
+                  interval
+                  intervalCount
+                }
+              }
+              priceAdjustments {
+                adjustmentValue {
+                  ... on SellingPlanPercentagePriceAdjustment {
+                    adjustmentPercentage
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -34,14 +48,41 @@ const query = `#graphql
   }
 `;
 
-const response = await fetch(`https://${domain}/api/${version}/graphql.json`, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'X-Shopify-Storefront-Access-Token': token,
-  },
-  body: JSON.stringify({ query }),
-});
+async function main() {
+  const response = await fetch(`https://${domain}/api/${version}/graphql.json`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Storefront-Access-Token': token,
+    },
+    body: JSON.stringify({ query }),
+  });
 
-const json = await response.json();
-console.log(JSON.stringify(json, null, 2));
+  const json = (await response.json()) as {
+    data?: {
+      product?: {
+        sellingPlanGroups?: {
+          nodes: { name: string; appName?: string | null }[];
+        };
+      };
+    };
+    errors?: unknown;
+  };
+
+  if (json.errors) {
+    console.error(JSON.stringify(json.errors, null, 2));
+    process.exit(1);
+  }
+
+  const groups = json.data?.product?.sellingPlanGroups?.nodes ?? [];
+  console.log('appName values:');
+  for (const group of groups) {
+    console.log(`  ${JSON.stringify(group.appName)}  (${group.name})`);
+  }
+  console.log('\n' + JSON.stringify(json, null, 2));
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
