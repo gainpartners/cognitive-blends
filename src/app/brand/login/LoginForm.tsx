@@ -2,6 +2,9 @@
 
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import { errorFields, logger } from '@/lib/log';
+
+const log = logger('access');
 
 export default function LoginForm({ next }: { next: string }) {
   const router = useRouter();
@@ -24,9 +27,11 @@ export default function LoginForm({ next }: { next: string }) {
         router.push(next);
         router.refresh();
       } else {
+        log.error('login rejected', { status: res.status });
         setError('Incorrect password');
       }
-    } catch {
+    } catch (err) {
+      log.error('login request failed', errorFields(err));
       setError('Something went wrong');
     } finally {
       setLoading(false);

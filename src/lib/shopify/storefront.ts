@@ -4,8 +4,16 @@ import {
   isStorefrontConfigured,
   storefrontEndpoint,
 } from '@/lib/config/server';
+import { logger } from '@/lib/log';
+
+const log = logger('storefront');
 
 const REQUEST_TIMEOUT_MS = 15_000;
+
+function operationName(query: string): string {
+  const match = query.match(/\b(?:query|mutation)\s+([A-Za-z0-9_]+)/);
+  return match?.[1] ?? 'anonymous';
+}
 
 export class StorefrontError extends Error {
   constructor(
@@ -18,23 +26,37 @@ export class StorefrontError extends Error {
   }
 }
 
+function fail(
+  message: string,
+  status: number,
+  fields?: Record<string, unknown>,
+  details?: unknown,
+): never {
+  log.error(message, fields);
+  throw new StorefrontError(message, status, details);
+}
+
 export async function storefrontFetch<T>(
   query: string,
   variables?: Record<string, unknown>,
   options?: { cache?: RequestCache; revalidate?: number },
 ): Promise<T> {
+  const operation = operationName(query);
+
   if (!isStorefrontConfigured()) {
-    throw new StorefrontError(
+    fail(
       'SHOPIFY_STORE_DOMAIN and SHOPIFY_STOREFRONT_API_TOKEN must be set',
       503,
+      { operation },
     );
   }
 
   const token = SHOPIFY_STOREFRONT_API_TOKEN.trim();
   if (token.startsWith('shpat_')) {
-    throw new StorefrontError(
+    fail(
       'SHOPIFY_STOREFRONT_API_TOKEN is an Admin API token (shpat_). Use the Headless Storefront API public or private token instead.',
       401,
+      { operation },
     );
   }
 
@@ -60,9 +82,14 @@ export async function storefrontFetch<T>(
     });
   } catch (error) {
     const timedOut = error instanceof Error && error.name === 'TimeoutError';
-    throw new StorefrontError(
+    fail(
       timedOut ? 'Storefront request timed out' : 'Could not reach Shopify',
       504,
+      {
+        operation,
+        timedOut,
+        name: error instanceof Error ? error.name : 'unknown',
+      },
     );
   }
 
@@ -71,19 +98,29 @@ export async function storefrontFetch<T>(
   try {
     payload = raw ? JSON.parse(raw) : {};
   } catch {
-    throw new StorefrontError('Storefront returned a malformed response', 502, raw.slice(0, 500));
+    fail('Storefront returned a malformed response', 502, {
+      operation,
+      status: response.status,
+      body: raw.slice(0, 300),
+    }, raw.slice(0, 500));
   }
 
   if (!response.ok) {
-    throw new StorefrontError(`Storefront HTTP ${response.status}`, response.status, payload);
+    fail(`Storefront HTTP ${response.status}`, response.status, {
+      operation,
+      status: response.status,
+    }, payload);
   }
 
   if (payload.errors?.length) {
-    throw new StorefrontError(payload.errors[0].message, 502, payload.errors);
+    fail(payload.errors[0].message, 502, {
+      operation,
+      errors: payload.errors.map((entry) => entry.message),
+    }, payload.errors);
   }
 
   if (!payload.data) {
-    throw new StorefrontError('Storefront returned no data', 502, payload);
+    fail('Storefront returned no data', 502, { operation }, payload);
   }
 
   return payload.data;

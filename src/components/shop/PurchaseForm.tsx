@@ -2,11 +2,14 @@
 
 import { useState } from 'react';
 import { addToCartAction } from '@/app/actions/cart';
+import { errorFields, logger } from '@/lib/log';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Price } from '@/components/ui/Price';
 import { customerFacingOptions } from '@/lib/shopify/selling-plans';
 import type { ProductVariant, SellingPlan } from '@/lib/shopify/types';
+
+const log = logger('purchase');
 
 export function PurchaseForm({
   productHandle,
@@ -37,6 +40,7 @@ export function PurchaseForm({
       await addToCartAction(formData);
       setDone(true);
     } catch (err) {
+      log.error('addToCart failed', errorFields(err));
       setError(err instanceof Error ? err.message : 'Could not add to cart');
     } finally {
       setPending(false);

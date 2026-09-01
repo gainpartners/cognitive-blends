@@ -1,5 +1,6 @@
 import 'server-only';
 import { cookies } from 'next/headers';
+import { errorFields, logger } from '@/lib/log';
 import { storefrontFetch, StorefrontError } from './storefront';
 import {
   CART_CREATE,
@@ -12,6 +13,7 @@ import { APPSTLE_SUBSCRIPTIONS_APP_NAME } from '@/lib/config/server';
 import { isAllowedSellingPlanId } from './selling-plans';
 import type { Cart, Product } from './types';
 
+const log = logger('cart');
 const CART_COOKIE = 'cb_cart';
 
 export async function getCartId(): Promise<string | undefined> {
@@ -34,7 +36,8 @@ export async function getCart(): Promise<Cart | null> {
   try {
     const data = await storefrontFetch<{ cart: Cart | null }>(CART_QUERY, { id });
     return data.cart;
-  } catch {
+  } catch (error) {
+    log.warn('getCart failed; treating as empty', errorFields(error));
     return null;
   }
 }
@@ -54,6 +57,7 @@ export async function addToCart({
 }: AddInput): Promise<Cart> {
   if (sellingPlanId) {
     if (!productHandle) {
+      log.warn('subscription add missing product handle', { merchandiseId });
       throw new StorefrontError('Product handle is required for subscriptions', 400);
     }
     const data = await storefrontFetch<{ product: Product | null }>(
@@ -66,6 +70,10 @@ export async function addToCart({
       APPSTLE_SUBSCRIPTIONS_APP_NAME,
     );
     if (!allowed) {
+      log.warn('rejected non-Appstle selling plan', {
+        productHandle,
+        sellingPlanId,
+      });
       throw new StorefrontError('That subscription plan is not available', 400);
     }
   }
@@ -82,8 +90,14 @@ export async function addToCart({
       cartCreate: { cart: Cart | null; userErrors: { message: string }[] };
     }>(CART_CREATE, { input: { lines: [line] } });
     const err = created.cartCreate.userErrors[0];
-    if (err) throw new StorefrontError(err.message, 400);
-    if (!created.cartCreate.cart) throw new StorefrontError('Could not create cart', 502);
+    if (err) {
+      log.warn('cartCreate userError', { message: err.message });
+      throw new StorefrontError(err.message, 400);
+    }
+    if (!created.cartCreate.cart) {
+      log.error('cartCreate returned no cart');
+      throw new StorefrontError('Could not create cart', 502);
+    }
     await setCartId(created.cartCreate.cart.id);
     return created.cartCreate.cart;
   }
@@ -92,8 +106,14 @@ export async function addToCart({
     cartLinesAdd: { cart: Cart | null; userErrors: { message: string }[] };
   }>(CART_LINES_ADD, { cartId, lines: [line] });
   const err = added.cartLinesAdd.userErrors[0];
-  if (err) throw new StorefrontError(err.message, 400);
-  if (!added.cartLinesAdd.cart) throw new StorefrontError('Could not update cart', 502);
+  if (err) {
+    log.warn('cartLinesAdd userError', { message: err.message });
+    throw new StorefrontError(err.message, 400);
+  }
+  if (!added.cartLinesAdd.cart) {
+    log.error('cartLinesAdd returned no cart');
+    throw new StorefrontError('Could not update cart', 502);
+  }
   return added.cartLinesAdd.cart;
 }
 
@@ -104,6 +124,9 @@ export async function removeCartLine(lineId: string): Promise<Cart | null> {
     cartLinesRemove: { cart: Cart | null; userErrors: { message: string }[] };
   }>(CART_LINES_REMOVE, { cartId, lineIds: [lineId] });
   const err = removed.cartLinesRemove.userErrors[0];
-  if (err) throw new StorefrontError(err.message, 400);
+  if (err) {
+    log.warn('cartLinesRemove userError', { message: err.message });
+    throw new StorefrontError(err.message, 400);
+  }
   return removed.cartLinesRemove.cart;
 }

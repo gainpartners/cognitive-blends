@@ -4,19 +4,28 @@ import { parseRatingValue, StarRating } from '@/components/ui/StarRating';
 import { PurchaseForm } from '@/components/shop/PurchaseForm';
 import { Reviews } from '@/components/shop/Reviews';
 import { APPSTLE_SUBSCRIPTIONS_APP_NAME, isStorefrontConfigured } from '@/lib/config/server';
+import { logger } from '@/lib/log';
 import { getProduct } from '@/lib/shopify/products';
 import { purchasePlans } from '@/lib/shopify/selling-plans';
 import { productNumericId } from '@/lib/utils';
+
+const log = logger('shop');
 
 export default async function ProductPage({
   params,
 }: {
   params: Promise<{ handle: string }>;
 }) {
-  if (!isStorefrontConfigured()) notFound();
   const { handle } = await params;
+  if (!isStorefrontConfigured()) {
+    log.warn('product page skipped; storefront is not configured', { handle });
+    notFound();
+  }
   const product = await getProduct(handle);
-  if (!product) notFound();
+  if (!product) {
+    log.warn('product not found', { handle });
+    notFound();
+  }
 
   const plans = purchasePlans(
     product.sellingPlanGroups.nodes,

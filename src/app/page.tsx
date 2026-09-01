@@ -1,11 +1,15 @@
 import { ProductCard } from '@/components/ui/ProductCard';
 import { parseRatingValue } from '@/components/ui/StarRating';
 import { isStorefrontConfigured } from '@/lib/config/server';
+import { errorFields, logger } from '@/lib/log';
 import { listProducts } from '@/lib/shopify/products';
 import { StorefrontError } from '@/lib/shopify/storefront';
 
+const log = logger('shop');
+
 export default async function HomePage() {
   if (!isStorefrontConfigured()) {
+    log.warn('home skipped; storefront is not configured');
     return (
       <div className="shell">
         <h1 className="page-title">Cognitive Blends</h1>
@@ -21,6 +25,7 @@ export default async function HomePage() {
   try {
     products = await listProducts();
   } catch (error) {
+    log.warn('home catalogue failed', errorFields(error));
     const message =
       error instanceof StorefrontError ? error.message : 'Could not load products';
     return (

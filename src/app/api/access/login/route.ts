@@ -1,11 +1,26 @@
 import { NextResponse } from 'next/server';
 import { signAccessToken } from '@/lib/access-auth';
 import { ACCESS_PASSWORD } from '@/lib/config/server';
+import { logger } from '@/lib/log';
+
+const log = logger('access');
 
 export async function POST(request: Request) {
-  const { password } = await request.json();
+  let password: unknown;
+  try {
+    const body = (await request.json()) as { password?: unknown };
+    password = body.password;
+  } catch {
+    log.warn('login body was not JSON');
+    return NextResponse.json({ error: 'Incorrect password' }, { status: 401 });
+  }
 
-  if (!ACCESS_PASSWORD || password !== ACCESS_PASSWORD) {
+  if (!ACCESS_PASSWORD) {
+    log.warn('login failed; ACCESS_PASSWORD is not set');
+    return NextResponse.json({ error: 'Incorrect password' }, { status: 401 });
+  }
+  if (password !== ACCESS_PASSWORD) {
+    log.warn('login failed; incorrect password');
     return NextResponse.json({ error: 'Incorrect password' }, { status: 401 });
   }
 

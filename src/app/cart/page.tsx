@@ -6,9 +6,13 @@ import { Button } from '@/components/ui/Button';
 import { Price } from '@/components/ui/Price';
 import { getCart } from '@/lib/shopify/cart';
 import { isStorefrontConfigured } from '@/lib/config/server';
+import { logger } from '@/lib/log';
+
+const log = logger('cart');
 
 export default async function CartPage() {
   if (!isStorefrontConfigured()) {
+    log.warn('cart page skipped; storefront is not configured');
     return (
       <div className="shell">
         <h1 className="page-title">Cart</h1>

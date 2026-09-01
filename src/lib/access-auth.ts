@@ -1,11 +1,15 @@
 import 'server-only';
 import { SignJWT, jwtVerify } from 'jose';
 import { ACCESS_SESSION_SECRET } from './config/server';
+import { logger } from './log';
+
+const log = logger('access');
 
 const secret = new TextEncoder().encode(ACCESS_SESSION_SECRET);
 
 export async function signAccessToken() {
   if (!ACCESS_SESSION_SECRET) {
+    log.error('ACCESS_SESSION_SECRET is not set');
     throw new Error('ACCESS_SESSION_SECRET is not set');
   }
 
@@ -17,7 +21,10 @@ export async function signAccessToken() {
 }
 
 export async function verifyAccessToken(token: string) {
-  if (!ACCESS_SESSION_SECRET) return false;
+  if (!ACCESS_SESSION_SECRET) {
+    log.warn('verify skipped; ACCESS_SESSION_SECRET is not set');
+    return false;
+  }
 
   try {
     const { payload } = await jwtVerify(token, secret);
