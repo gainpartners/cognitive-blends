@@ -76,6 +76,10 @@ export function storefrontEndpoint(): string {
   return `https://${SHOPIFY_STORE_DOMAIN}/api/${SHOPIFY_STOREFRONT_API_VERSION}/graphql.json`;
 }
 
+export function shopOrigin(): string {
+  return SHOPIFY_STORE_DOMAIN ? `https://${SHOPIFY_STORE_DOMAIN}` : '';
+}
+
 /** Shopify-hosted new customer accounts. Same destination as the live site Account link. */
 export function shopifyHostedAccountUrl(): string | null {
   if (!SHOPIFY_SHOP_ID) return null;

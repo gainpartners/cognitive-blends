@@ -1,5 +1,6 @@
-import Image from 'next/image';
 import Link from 'next/link';
+import { MediaImage } from '@/components/ui/MediaImage';
+import { imageSizes } from '@/lib/shopify/image';
 import { removeCartLineAction } from '@/app/actions/cart';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -36,11 +37,12 @@ export default async function CartPage() {
           {lines.map((line) => (
             <div key={line.id} className="cart-line">
               {line.merchandise.image?.url ? (
-                <Image
+                <MediaImage
                   src={line.merchandise.image.url}
                   alt={line.merchandise.image.altText || line.merchandise.product.title}
                   width={88}
                   height={88}
+                  sizes={imageSizes.thumb}
                 />
               ) : (
                 <div />

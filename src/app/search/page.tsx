@@ -1,4 +1,5 @@
 import { ProductCard } from '@/components/ui/ProductCard';
+import { Reveal } from '@/components/ui/Reveal';
 import { isStorefrontConfigured } from '@/lib/config/server';
 import { errorFields, logger } from '@/lib/log';
 import {
@@ -47,26 +48,27 @@ async function SearchResults({ query }: { query: string }) {
   }
   return (
     <div className="product-grid">
-      {products.map((product) => {
+      {products.map((product, index) => {
         const oneTime = oneTimePrice(product);
         const compare = compareAtPrice(product);
         const subscribe = subscribePrice(product);
         return (
-          <ProductCard
-            key={product.id}
-            product={{
-              handle: product.handle,
-              title: product.title,
-              image: product.featuredImage,
-              amount: oneTime.amount,
-              currencyCode: oneTime.currencyCode,
-              compareAtAmount: compare?.amount,
-              subscribeAmount: subscribe?.amount,
-              oneTimeLabel: popularProducts.oneTimeLabel,
-              subscribeLabel: popularProducts.subscribeLabel,
-              showRating: false,
-            }}
-          />
+          <Reveal key={product.id} order={index}>
+            <ProductCard
+              product={{
+                handle: product.handle,
+                title: product.title,
+                image: product.featuredImage,
+                amount: oneTime.amount,
+                currencyCode: oneTime.currencyCode,
+                compareAtAmount: compare?.amount,
+                subscribeAmount: subscribe?.amount,
+                oneTimeLabel: popularProducts.oneTimeLabel,
+                subscribeLabel: popularProducts.subscribeLabel,
+                showRating: false,
+              }}
+            />
+          </Reveal>
         );
       })}
     </div>

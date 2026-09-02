@@ -1,37 +1,81 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { useActionState } from 'react';
+import { contactAction } from '@/app/actions/contact';
 import { Button } from '@/components/ui/Button';
 import { Field } from '@/components/ui/Field';
 import { contactPage } from '@/content/pages/contact';
 
 export function ContactForm() {
-  const [sent, setSent] = useState(false);
+  const [state, action, pending] = useActionState(contactAction, {
+    ok: false,
+    error: null,
+    name: '',
+    email: '',
+    phone: '',
+    comment: '',
+  });
 
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setSent(true);
-  }
-
-  if (sent) {
-    return <p>Thanks for getting in touch.</p>;
+  if (state.ok) {
+    return (
+      <p className="contact-page__success" aria-live="polite">
+        {contactPage.success}
+      </p>
+    );
   }
 
   return (
-    <form className="stack contact-form" onSubmit={onSubmit}>
-      <Field label={contactPage.form.name}>
-        <input type="text" name="name" autoComplete="name" />
+    <form className="contact-form" action={action}>
+      <div className="contact-form__row">
+        <Field label={contactPage.form.name} hideLabel>
+          <input
+            type="text"
+            name="name"
+            autoComplete="name"
+            placeholder={contactPage.form.name}
+            defaultValue={state.name}
+            disabled={pending}
+          />
+        </Field>
+        <Field label={`${contactPage.form.email} *`} hideLabel>
+          <input
+            type="email"
+            name="email"
+            autoComplete="email"
+            required
+            placeholder={`${contactPage.form.email} *`}
+            defaultValue={state.email}
+            disabled={pending}
+          />
+        </Field>
+      </div>
+      <Field label={contactPage.form.phone} hideLabel>
+        <input
+          type="tel"
+          name="phone"
+          autoComplete="tel"
+          placeholder={contactPage.form.phone}
+          defaultValue={state.phone}
+          disabled={pending}
+        />
       </Field>
-      <Field label={`${contactPage.form.email} *`}>
-        <input type="email" name="email" autoComplete="email" required />
+      <Field label={contactPage.form.comment} hideLabel>
+        <textarea
+          name="comment"
+          rows={8}
+          placeholder={contactPage.form.comment}
+          defaultValue={state.comment}
+          disabled={pending}
+        />
       </Field>
-      <Field label={contactPage.form.phone}>
-        <input type="tel" name="phone" autoComplete="tel" />
-      </Field>
-      <Field label={contactPage.form.comment}>
-        <textarea name="comment" rows={6} />
-      </Field>
-      <Button type="submit">{contactPage.form.submit}</Button>
+      {state.error ? (
+        <p className="error-text" aria-live="polite">
+          {state.error}
+        </p>
+      ) : null}
+      <Button type="submit" disabled={pending}>
+        {contactPage.form.submit}
+      </Button>
     </form>
   );
 }

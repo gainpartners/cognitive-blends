@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
+import { MediaImage } from '@/components/ui/MediaImage';
+import { imageSizes } from '@/lib/shopify/image';
 import { whoWeAre } from '@/content/home';
 import { CaretIcon, PauseIcon, PlayIcon } from '@/components/layout/icons';
 
@@ -34,11 +36,14 @@ export function WhoWeAreSlideshow() {
             aria-hidden={i !== index}
             aria-label={`${i + 1} of ${slides.length}`}
           >
-            <img
+            <MediaImage
               src={person.image}
               alt=""
+              fill
+              sizes={imageSizes.full}
               className="who-slide__image"
               style={{ objectPosition: person.objectPosition }}
+              loading="eager"
             />
             <div className="who-slide__copy shell">
               <h2 className="who-slide__heading">{whoWeAre.heading}</h2>

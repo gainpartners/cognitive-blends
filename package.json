@@ -10,7 +10,7 @@
     "config:check": "node scripts/config-check.mjs",
     "probe:plans": "tsx scripts/probe-selling-plans.ts",
     "probe:reviews": "tsx scripts/probe-reviews.ts",
-    "test": "tsx --test src/lib/shopify/selling-plans.test.ts src/lib/shopify/country-code.test.ts src/lib/shopify/subscribe-fields.test.ts src/lib/judgeme.test.ts src/lib/log.test.ts src/content/content.test.ts"
+    "test": "tsx --test src/lib/shopify/selling-plans.test.ts src/lib/shopify/country-code.test.ts src/lib/shopify/subscribe-fields.test.ts src/lib/shopify/image.test.ts src/lib/judgeme.test.ts src/lib/log.test.ts src/content/content.test.ts"
   },
   "dependencies": {
     "jose": "^6.2.10",

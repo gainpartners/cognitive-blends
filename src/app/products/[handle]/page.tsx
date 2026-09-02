@@ -1,5 +1,6 @@
-import Image from 'next/image';
 import { notFound } from 'next/navigation';
+import { MediaImage } from '@/components/ui/MediaImage';
+import { imageSizes } from '@/lib/shopify/image';
 import { parseRatingValue, StarRating } from '@/components/ui/StarRating';
 import { ProductAccordion } from '@/components/shop/ProductAccordion';
 import { PurchaseForm } from '@/components/shop/PurchaseForm';
@@ -55,12 +56,13 @@ export default async function ProductPage({
       <div className="product-layout">
         <div>
           {hero?.url ? (
-            <Image
+            <MediaImage
               src={hero.url}
               alt={hero.altText || product.title}
               width={hero.width ?? 1200}
               height={hero.height ?? 1200}
-              priority
+              sizes={imageSizes.pdp}
+              preload
             />
           ) : null}
         </div>

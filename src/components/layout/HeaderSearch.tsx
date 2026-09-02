@@ -9,8 +9,9 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
+import { MediaImage } from '@/components/ui/MediaImage';
+import { imageSizes } from '@/lib/shopify/image';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import type { PredictiveSearchResult } from '@/lib/shopify/types';
@@ -180,11 +181,12 @@ function SearchOverlay({ onClose }: { onClose: () => void }) {
                 <li key={product.id}>
                   <Link href={`/products/${product.handle}`} onClick={onClose}>
                     {product.featuredImage?.url ? (
-                      <Image
+                      <MediaImage
                         src={product.featuredImage.url}
                         alt={product.featuredImage.altText || product.title}
-                        width={72}
-                        height={72}
+                        width={48}
+                        height={48}
+                        sizes={imageSizes.search}
                       />
                     ) : (
                       <span className="search-overlay__thumb" />

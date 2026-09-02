@@ -1,8 +1,12 @@
+import { preload } from 'react-dom';
 import { PurchaseCtas } from '@/components/content/PurchaseCtas';
 import { SignupForm } from '@/components/content/SignupForm';
 import { WhoWeAreSlideshow } from '@/components/content/WhoWeAreSlideshow';
 import { Button } from '@/components/ui/Button';
-import { ProductCard } from '@/components/ui/ProductCard';
+import { CatalogGrid } from '@/components/shop/CatalogGrid';
+import { MediaImage } from '@/components/ui/MediaImage';
+import { imageSizes } from '@/lib/shopify/image';
+import { Reveal } from '@/components/ui/Reveal';
 import { StarRating } from '@/components/ui/StarRating';
 import {
   hero,
@@ -13,17 +17,14 @@ import {
 } from '@/content/home';
 import { isStorefrontConfigured } from '@/lib/config/server';
 import { errorFields, logger } from '@/lib/log';
-import {
-  compareAtPrice,
-  listFrontpageProducts,
-  oneTimePrice,
-  subscribePrice,
-} from '@/lib/shopify/products';
+import { listFrontpageProducts } from '@/lib/shopify/products';
 import { StorefrontError } from '@/lib/shopify/storefront';
 
 const log = logger('shop');
 
 export default async function HomePage() {
+  preload(hero.poster, { as: 'image' });
+
   return (
     <>
       <section className="hero">
@@ -33,6 +34,7 @@ export default async function HomePage() {
           muted
           loop
           playsInline
+          preload="metadata"
           poster={hero.poster}
           aria-hidden
         >
@@ -52,38 +54,52 @@ export default async function HomePage() {
 
       <PopularProducts />
 
-      <section className="section signup">
+      <Reveal as="section" className="section signup">
         <div className="shell signup__inner">
           <SignupForm />
         </div>
-      </section>
+      </Reveal>
 
       <section className="section">
         <div className="shell features">
-          <div className="features__intro">
+          <Reveal className="features__intro">
             <h2 className="section-title">{thriveOneFeatures.title}</h2>
             <p>{thriveOneFeatures.intro}</p>
             {thriveOneFeatures.image ? (
               <div className="features__image">
-                <img src={thriveOneFeatures.image} alt="" />
+                <MediaImage
+                  src={thriveOneFeatures.image}
+                  alt=""
+                  width={1000}
+                  height={771}
+                  sizes={imageSizes.half}
+                />
               </div>
             ) : null}
-          </div>
+          </Reveal>
           <div className="features__list">
-            {thriveOneFeatures.blocks.map((block) => (
-              <article key={block.title} className="feature-card">
+            {thriveOneFeatures.blocks.map((block, index) => (
+              <Reveal key={block.title} as="article" className="feature-card" order={index}>
                 {block.image ? (
                   <div className="feature-card__image">
-                    <img src={block.image} alt="" />
+                    <MediaImage
+                      src={block.image}
+                      alt=""
+                      width={88}
+                      height={88}
+                      sizes={imageSizes.feature}
+                    />
                   </div>
                 ) : null}
                 <div>
                   <h3>{block.title}</h3>
                   <p>{block.body}</p>
                 </div>
-              </article>
+              </Reveal>
             ))}
-            <PurchaseCtas items={thriveOneFeatures.purchaseCtas} stacked />
+            <Reveal order={thriveOneFeatures.blocks.length}>
+              <PurchaseCtas items={thriveOneFeatures.purchaseCtas} stacked />
+            </Reveal>
           </div>
         </div>
       </section>
@@ -93,12 +109,12 @@ export default async function HomePage() {
       <section className="section quotes">
         <div className="shell">
           <div className="quotes__grid">
-            {testimonials.quotes.map((quote) => (
-              <blockquote key={quote.name} className="quote">
+            {testimonials.quotes.map((quote, index) => (
+              <Reveal key={quote.name} as="blockquote" className="quote" order={index}>
                 <StarRating value={5} showValue={false} />
                 <p>{quote.body}</p>
                 <footer>{quote.name}</footer>
-              </blockquote>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -106,10 +122,16 @@ export default async function HomePage() {
 
       <section className="section stats">
         <div className="shell stats__layout">
-          <div className="stats__image">
-            <img src={statsPanel.image} alt="" />
-          </div>
-          <div className="stats__content">
+          <Reveal className="stats__image">
+            <MediaImage
+              src={statsPanel.image}
+              alt=""
+              width={600}
+              height={400}
+              sizes={imageSizes.half}
+            />
+          </Reveal>
+          <Reveal className="stats__content" order={1}>
             <h2 className="section-title">{statsPanel.heading}</h2>
             <p>{statsPanel.body}</p>
             <div className="stats__grid">
@@ -123,11 +145,13 @@ export default async function HomePage() {
             <Button as="a" href={statsPanel.cta.href} variant="secondary">
               {statsPanel.cta.label}
             </Button>
-          </div>
+          </Reveal>
         </div>
       </section>
 
-      <WhoWeAreSlideshow />
+      <Reveal>
+        <WhoWeAreSlideshow />
+      </Reveal>
     </>
   );
 }
@@ -168,38 +192,10 @@ async function PopularProducts() {
   return (
     <section className="section" id="products">
       <div className="shell">
-        <h2 className="section-title section-title--center">{popularProducts.heading}</h2>
-        <div className="product-grid">
-          {[...products]
-            .sort((a, b) => {
-              const order = popularProducts.handles;
-              const ai = order.indexOf(a.handle);
-              const bi = order.indexOf(b.handle);
-              return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
-            })
-            .map((product) => {
-            const oneTime = oneTimePrice(product);
-            const compare = compareAtPrice(product);
-            const subscribe = subscribePrice(product);
-            return (
-              <ProductCard
-                key={product.id}
-                product={{
-                  handle: product.handle,
-                  title: product.title,
-                  image: product.featuredImage,
-                  amount: oneTime.amount,
-                  currencyCode: oneTime.currencyCode,
-                  compareAtAmount: compare?.amount,
-                  subscribeAmount: subscribe?.amount,
-                  oneTimeLabel: popularProducts.oneTimeLabel,
-                  subscribeLabel: popularProducts.subscribeLabel,
-                  showRating: false,
-                }}
-              />
-            );
-          })}
-        </div>
+        <Reveal>
+          <h2 className="section-title section-title--center">{popularProducts.heading}</h2>
+        </Reveal>
+        <CatalogGrid products={products} />
       </div>
     </section>
   );

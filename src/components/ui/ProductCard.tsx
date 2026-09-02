@@ -1,6 +1,7 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { formatEuroComma, formatMoney, formatPlainAmount } from '@/lib/utils';
+import { imageSizes } from '@/lib/shopify/image';
+import { MediaImage } from './MediaImage';
 import { Price } from './Price';
 import { StarRating } from './StarRating';
 
@@ -37,11 +38,12 @@ export function ProductCard({ product }: { product: ProductCardData }) {
     <Link href={`/products/${product.handle}`} className="product-card">
       <div className="product-card__image">
         {product.image?.url ? (
-          <Image
+          <MediaImage
             src={product.image.url}
             alt={product.image.altText || product.title}
             width={product.image.width ?? 800}
             height={product.image.height ?? 800}
+            sizes={imageSizes.card}
           />
         ) : null}
       </div>

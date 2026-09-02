@@ -11,6 +11,7 @@ export const ourStory = {
     {
       heading: 'Jack Carty',
       image: '/brand/jack-carty-portrait.jpg',
+      objectPosition: '51.9% 44%',
       paragraphs: [
         "As a high-performing rugby player, Jack Carty understands the physical and mental demands that come with pushing one's body to the limit. Through his athletic career, he has consistently sought natural solutions to enhance his strength, recovery, and overall wellness.",
         "Jack's journey inspired him to co-create Cognitive Blends, a business designed to support people in achieving their best every day. Jack brings his passion for health, resilience, and performance into Cognitive Blends, ensuring the product meets the needs of athletes, busy professionals, and anyone looking to elevate their wellness.",
@@ -19,6 +20,7 @@ export const ourStory = {
     {
       heading: 'Dr. Alan Farrell',
       image: '/brand/alan-farrell-portrait.png',
+      nameLine: 'Dr. Alan Farrell',
       credentials: 'MB BCh MSc Sports and Exercise Medicine',
       paragraphs: [
         'Dr. Alan Farrell is an expert in Preventative Medicine and High Performance Medicine. Over the last 2 decades he has worked with numerous Elite and Professional Athletes and Teams, and more recently turned his attention to using the tools of the High Performance World to prevent and treat the epidemic of Physical and Mental chronic disease sweeping the World.',

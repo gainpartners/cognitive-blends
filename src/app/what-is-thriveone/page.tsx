@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import { PurchaseCtas } from '@/components/content/PurchaseCtas';
 import { CheckIcon } from '@/components/layout/icons';
+import { MediaImage } from '@/components/ui/MediaImage';
+import { imageSizes } from '@/lib/shopify/image';
+import { Reveal } from '@/components/ui/Reveal';
 import { whatIsThriveOne } from '@/content/pages/what-is-thriveone';
 
 export const metadata: Metadata = {
@@ -12,18 +15,18 @@ export default function WhatIsThriveOnePage() {
 
   return (
     <div className="thrive-page">
-      <section className="thrive-intro">
+      <Reveal as="section" className="thrive-intro">
         <div className="shell">
           <h1 className="thrive-intro__title">{page.heading}</h1>
           {page.intro.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}
         </div>
-      </section>
+      </Reveal>
 
       <section className="thrive-does">
         <div className="shell thrive-does__grid">
-          <div>
+          <Reveal>
             <h2 className="thrive-heading">{page.whatItDoes.heading}</h2>
             <ul className="benefit-checks">
               {page.whatItDoes.items.map((item) => (
@@ -33,52 +36,73 @@ export default function WhatIsThriveOnePage() {
                 </li>
               ))}
             </ul>
-          </div>
+          </Reveal>
           {page.photo ? (
-            <div className="thrive-does__photo">
-              <img src={page.photo} alt="" />
-            </div>
+            <Reveal className="thrive-does__photo" order={1}>
+              <MediaImage
+                src={page.photo}
+                alt=""
+                width={2000}
+                height={1334}
+                sizes={imageSizes.half}
+              />
+            </Reveal>
           ) : null}
         </div>
       </section>
 
       <section className="thrive-for">
         <div className="shell thrive-for__grid">
-          <div className="thrive-for__copy">
+          <Reveal className="thrive-for__copy">
             <h2 className="thrive-heading">{page.whoItIsFor.heading}</h2>
             {page.whoItIsFor.intro.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
             {page.audiencePhoto ? (
               <div className="thrive-for__photo">
-                <img src={page.audiencePhoto} alt="" />
+                <MediaImage
+                  src={page.audiencePhoto}
+                  alt=""
+                  width={1024}
+                  height={1024}
+                  sizes={imageSizes.half}
+                />
               </div>
             ) : null}
-          </div>
+          </Reveal>
           <div className="thrive-for__types">
-            {page.whoItIsFor.types.map((type) => (
-              <article key={type.title} className="audience-row">
+            {page.whoItIsFor.types.map((type, index) => (
+              <Reveal key={type.title} as="article" className="audience-row" order={index}>
                 {type.image ? (
-                  <img src={type.image} alt="" className="audience-row__image" />
+                  <MediaImage
+                    src={type.image}
+                    alt=""
+                    width={72}
+                    height={72}
+                    sizes={imageSizes.audience}
+                    className="audience-row__image"
+                  />
                 ) : null}
                 <div>
                   <h3>{type.title}</h3>
                   <p>{type.body}</p>
                 </div>
-              </article>
+              </Reveal>
             ))}
-            <PurchaseCtas items={page.purchaseCtas} stacked />
+            <Reveal order={page.whoItIsFor.types.length}>
+              <PurchaseCtas items={page.purchaseCtas} stacked />
+            </Reveal>
           </div>
         </div>
       </section>
 
       <section className="thrive-inside">
-        <div className="shell thrive-inside__intro">
+        <Reveal className="shell thrive-inside__intro">
           <h2 className="thrive-inside__heading">{page.whatsInside.heading}</h2>
           <p>{page.whatsInside.intro}</p>
-        </div>
+        </Reveal>
         {page.whatsInside.ingredients.map((ingredient, index) => (
-          <div
+          <Reveal
             key={ingredient.title}
             className={
               index % 2 === 1
@@ -88,14 +112,22 @@ export default function WhatIsThriveOnePage() {
           >
             <div className="shell ingredient-band__grid">
               <div className="ingredient-band__image">
-                {ingredient.image ? <img src={ingredient.image} alt="" /> : null}
+                {ingredient.image ? (
+                  <MediaImage
+                    src={ingredient.image}
+                    alt=""
+                    width={1500}
+                    height={1500}
+                    sizes={imageSizes.half}
+                  />
+                ) : null}
               </div>
               <div className="ingredient-band__copy">
                 <h3>{ingredient.title}</h3>
                 <p>{ingredient.body}</p>
               </div>
             </div>
-          </div>
+          </Reveal>
         ))}
       </section>
     </div>

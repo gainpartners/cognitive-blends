@@ -34,7 +34,8 @@ export async function Header() {
                 alt={brand.name}
                 width={180}
                 height={48}
-                priority
+                sizes="180px"
+                preload
               />
             </Link>
             <div className="header-tools">

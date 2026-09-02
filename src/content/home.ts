@@ -2,7 +2,7 @@ export const hero = {
   title: 'Formulas For Modern Living',
   body: 'Our products are proudly made in the West of Ireland and are designed to promote quality sleep, balanced hormones and sustained energy so you can feel strong, focused and ready for anything.',
   video: '/brand/hero.mp4',
-  poster: '/brand/thriveone-lifestyle.png',
+  poster: '/brand/hero-poster.jpg',
   cta: {
     label: 'Shop now',
     href: '/collections/frontpage',

@@ -5,6 +5,7 @@ import { hero, signup, statsPanel, testimonials, thriveOneFeatures, whoWeAre } f
 import { navLinks } from './nav';
 import { contactPage } from './pages/contact';
 import { ourStory } from './pages/our-story';
+import { onlineStore } from './pages/store';
 import { whatIsThriveOne } from './pages/what-is-thriveone';
 import { thriveoneAccordion } from './pdp/thriveone-accordion';
 
@@ -13,6 +14,10 @@ describe('nav', () => {
     assert.deepEqual(
       navLinks.map((link) => link.label),
       ['Home', 'What Is ThriveOne?', 'Online Store', 'Our Story', 'Contact'],
+    );
+    assert.equal(
+      navLinks.find((link) => link.label === 'Online Store')?.href,
+      '/collections/frontpage',
     );
   });
 });
@@ -49,6 +54,8 @@ describe('verbatim copy', () => {
   });
 
   it('keeps contact intro and accordion FAQs', () => {
+    assert.equal(onlineStore.heading, 'Best Sellers');
+    assert.equal(contactPage.heading, 'Contact Us');
     assert.equal(contactPage.intro.length, 3);
     const faqs = thriveoneAccordion.find((section) => section.title === 'FAQs');
     assert.ok(faqs && 'faqs' in faqs && faqs.faqs.length === 4);

@@ -1,6 +1,6 @@
 export const contactPage = {
   title: 'Contact',
-  heading: 'Contact',
+  heading: 'Contact Us',
   intro: [
     'Our commitment is to provide you with the best possible service and ensure you have a great experience using Cognitive Blends products.',
     "For any questions, feedback, or assistance, we're here to help! Please don't hesitate to reach out to our team through the contact form below.",
@@ -13,4 +13,5 @@ export const contactPage = {
     comment: 'Comment',
     submit: 'Send',
   },
+  success: "Thanks for contacting us. We'll get back to you as soon as possible.",
 };
