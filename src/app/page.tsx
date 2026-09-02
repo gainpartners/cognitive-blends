@@ -34,7 +34,7 @@ export default async function HomePage() {
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="auto"
           poster={hero.poster}
           aria-hidden
         >

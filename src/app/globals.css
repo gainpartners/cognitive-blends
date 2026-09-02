@@ -362,6 +362,9 @@ h3 {
 }
 
 .locale-picker__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   background: transparent;
   border: 0;
   color: var(--ink);
@@ -370,6 +373,15 @@ h3 {
   cursor: pointer;
   padding: 0;
   white-space: nowrap;
+}
+
+.locale-picker__toggle .icon-caret {
+  flex-shrink: 0;
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.locale-picker__toggle[aria-expanded='true'] .icon-caret {
+  transform: rotate(180deg);
 }
 
 .locale-picker__panel {
@@ -406,7 +418,10 @@ h3 {
 }
 
 .locale-picker__list button {
-  display: block;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
   width: 100%;
   text-align: left;
   background: transparent;
@@ -416,6 +431,12 @@ h3 {
   font-size: 0.9375rem;
   padding: 10px 4px;
   cursor: pointer;
+}
+
+.locale-picker__currency {
+  color: var(--ink-soft);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
 }
 
 .locale-picker__list button:hover,
@@ -1615,7 +1636,8 @@ form input[type="password"] {
 
   .btn:hover:not(:disabled),
   .product-card:hover,
-  .product-card:hover .product-card__image img {
+  .product-card:hover .product-card__image img,
+  .locale-picker__toggle[aria-expanded='true'] .icon-caret {
     transform: none;
   }
 }

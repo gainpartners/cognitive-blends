@@ -94,7 +94,7 @@ export function CountrySelector({
         <span>
           {current.name} | {current.currency.isoCode} {current.currency.symbol}
         </span>
-        {variant === 'select' ? <CaretIcon /> : null}
+        <CaretIcon />
       </button>
       {open ? (
         <div className="locale-picker__panel" id={listId} role="listbox">
@@ -116,7 +116,10 @@ export function CountrySelector({
                   aria-selected={country.isoCode === current.isoCode}
                   onClick={() => choose(country.isoCode)}
                 >
-                  {country.name}
+                  {country.name}{' '}
+                  <span className="locale-picker__currency">
+                    {country.currency.isoCode} {country.currency.symbol}
+                  </span>
                 </button>
               </li>
             ))}
