@@ -40,9 +40,126 @@ export const typeScale = [
 ] as const;
 
 export const spacing = [
-  { token: '--space-2', px: 8, use: 'Tight gaps (Dawn desktop grid)' },
+  { token: '--space-1', px: 4, use: 'Icon gaps' },
+  { token: '--space-2', px: 8, use: 'Tight gaps, badge padding' },
+  { token: '--space-3', px: 12, use: 'Label to field' },
   { token: '--space-4', px: 16, use: 'Hero mobile heading gap' },
   { token: '--space-5', px: 20, use: 'Card padding, product grid' },
+  { token: '--space-6', px: 32, use: 'Block gaps' },
   { token: '--space-7', px: 40, use: 'Section padding (mobile)' },
   { token: '--space-8', px: 60, use: 'Section padding (desktop)' },
+] as const;
+
+export const contrastPairs = [
+  {
+    fg: 'Ink',
+    bg: 'Charcoal',
+    ratio: '12.6:1',
+    badge: 'AAA',
+    fgHex: '#FFFFFF',
+    bgHex: '#252525',
+    note: 'Primary body on the shop',
+  },
+  {
+    fg: 'Sand',
+    bg: 'Charcoal',
+    ratio: '7.4:1',
+    badge: 'AAA',
+    fgHex: '#C9B288',
+    bgHex: '#252525',
+    note: 'Headings only, not small UI',
+  },
+  {
+    fg: 'Ink dark',
+    bg: 'Sand',
+    ratio: '8.1:1',
+    badge: 'AAA',
+    fgHex: '#121212',
+    bgHex: '#C9B288',
+    note: 'Marketing buttons',
+  },
+  {
+    fg: 'Ink dark',
+    bg: 'Raised',
+    ratio: '16.1:1',
+    badge: 'AAA',
+    fgHex: '#121212',
+    bgHex: '#FFFFFF',
+    note: 'Product cards',
+  },
+  {
+    fg: 'Teal',
+    bg: 'Charcoal',
+    ratio: '5.2:1',
+    badge: 'AA',
+    fgHex: '#00A29B',
+    bgHex: '#252525',
+    note: 'Shop actions and subscribe price',
+  },
+  {
+    fg: 'Mute',
+    bg: 'Raised',
+    ratio: '4.6:1',
+    badge: 'AA',
+    fgHex: '#6D7175',
+    bgHex: '#FFFFFF',
+    note: 'Captions 14px+. Not body text',
+  },
+] as const;
+
+export const pages = [
+  {
+    page: 'Home',
+    url: '/',
+    desc: 'Hero video → catalogue → signup → ThriveOne features → quotes → stats → Who We Are.',
+  },
+  {
+    page: 'What Is ThriveOne?',
+    url: '/what-is-thriveone',
+    desc: 'Benefits, audience, ingredients. Purchase CTAs are the same Button atoms as home.',
+  },
+  {
+    page: 'Online Store',
+    url: '/collections/frontpage',
+    desc: 'Best sellers. CatalogSection + ProductCard. Prices from Shopify Markets.',
+  },
+  {
+    page: 'Product',
+    url: '/products/thriveone',
+    desc: 'MediaImage, PurchaseForm (Appstle plans only), accordion, Judge.me reviews.',
+  },
+  {
+    page: 'Our Story',
+    url: '/our-story',
+    desc: 'Founders. Copy stays verbatim, including Cogntive Blends.',
+  },
+  {
+    page: 'Contact',
+    url: '/contact',
+    desc: 'ContactForm posts to Shopify contact. Fields persist on error.',
+  },
+  {
+    page: 'Cart / Search / Account',
+    url: '/cart',
+    desc: 'Cart is Shopify checkoutUrl. Search uses Storefront predictive search. Account is hosted Shopify, not a custom portal.',
+  },
+] as const;
+
+export const motionRules = [
+  {
+    name: 'Reveal',
+    use: 'Off-screen sections only. In-view nodes stay put after SSR. One-shot IntersectionObserver.',
+  },
+  {
+    name: 'Hover lift',
+    use: 'Buttons translateY(-0.25rem). Product cards lift 4px and zoom the image inside a clipped frame.',
+  },
+  {
+    name: 'Ambient',
+    use: 'Who We Are slide images scale 1 → 1.06 over 30s. Never on product photography.',
+  },
+  {
+    name: 'Reduced motion',
+    use: 'No reveal, no ambient, no lift. Content is visible immediately.',
+  },
 ] as const;

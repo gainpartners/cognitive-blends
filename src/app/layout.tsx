@@ -1,7 +1,5 @@
 import type { Metadata } from 'next';
 import { Assistant, EB_Garamond } from 'next/font/google';
-import { Header } from '@/components/layout/Header';
-import { Footer } from '@/components/layout/Footer';
 import { shouldNoIndex } from '@/lib/access';
 import './globals.css';
 
@@ -29,11 +27,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en-IE" className={`${assistant.variable} ${garamond.variable}`}>
-      <body>
-        <Header />
-        <main>{children}</main>
-        <Footer />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
