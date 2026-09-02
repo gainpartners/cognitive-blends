@@ -62,5 +62,6 @@ describe('footer', () => {
       '© 2031, Cognitive Blends - Natural Hormone Support.',
     );
     assert.equal(footer.instagram.href, 'https://instagram.com/cognitiveblends');
+    assert.equal(footer.countryLabel, 'Country/region');
   });
 });

@@ -25,18 +25,22 @@ export const whatIsThriveOne = {
       {
         title: 'For People Who Push Their Limits',
         body: 'Designed for those who train with intention and want better recovery, steadier energy and sharper performance.',
+        image: '/brand/audience/limits.jpg',
       },
       {
         title: 'For High-Output Performers',
         body: 'Built for anyone who demands more from their body and needs reliable, sustained performance — not stimulants.',
+        image: '/brand/audience/performers.webp',
       },
       {
         title: 'For Anyone Feeling Off-Balance',
         body: 'Engineered for those noticing shifts in mood, motivation or hormones and want steady, natural support to feel more like themselves again.',
+        image: '/brand/audience/off-balance.jpg',
       },
       {
         title: 'For Those Wanting to Stay at Their Peak',
         body: 'Ideal for men who want to feel powerful, energised and resilient - with ingredients that naturally support strength, recovery and overall vitality.',
+        image: '/brand/audience/peak.jpg',
       },
     ],
   },
@@ -45,6 +49,7 @@ export const whatIsThriveOne = {
     { label: 'Buy It Once', href: '/products/thriveone' },
   ],
   photo: '/brand/thriveone-photo.jpg',
+  audiencePhoto: '/brand/thriveone-triathlete.jpg',
   whatsInside: {
     heading: "What's Inside?",
     intro:

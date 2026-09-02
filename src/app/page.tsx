@@ -1,5 +1,6 @@
 import { PurchaseCtas } from '@/components/content/PurchaseCtas';
 import { SignupForm } from '@/components/content/SignupForm';
+import { WhoWeAreSlideshow } from '@/components/content/WhoWeAreSlideshow';
 import { Button } from '@/components/ui/Button';
 import { ProductCard } from '@/components/ui/ProductCard';
 import { StarRating } from '@/components/ui/StarRating';
@@ -9,7 +10,6 @@ import {
   statsPanel,
   testimonials,
   thriveOneFeatures,
-  whoWeAre,
 } from '@/content/home';
 import { isStorefrontConfigured } from '@/lib/config/server';
 import { errorFields, logger } from '@/lib/log';
@@ -127,28 +127,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="section">
-        <div className="shell">
-          <div className="who-grid">
-            {whoWeAre.people.map((person) => (
-              <article key={person.name} className="who-card">
-                <div className="who-card__image">
-                  <img src={person.image} alt={person.name} />
-                </div>
-                <div className="who-card__body">
-                  <p className="who-card__kicker">{whoWeAre.heading}</p>
-                  <h3>
-                    {person.name} - {person.role}
-                  </h3>
-                  <Button as="a" href={person.cta.href}>
-                    {person.cta.label}
-                  </Button>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+      <WhoWeAreSlideshow />
     </>
   );
 }

@@ -51,19 +51,21 @@ export const thriveOneFeatures = {
 
 export const whoWeAre = {
   heading: 'Who We Are',
+  ariaLabel: 'Your Wellness Team',
+  autoplayMs: 9000,
   people: [
     {
       name: 'Jack Carty',
       role: 'Founder',
-      initial: 'J',
-      image: '/brand/jack-carty.jpg',
+      image: '/brand/who/jack-carty.jpg',
+      objectPosition: '53.7736% 14.195%',
       cta: { label: 'Learn More', href: '/our-story' },
     },
     {
       name: 'Dr Alan Farrell',
       role: 'Medical Advisor',
-      initial: 'A',
-      image: '/brand/alan-farrell.png',
+      image: '/brand/who/alan-farrell.png',
+      objectPosition: '67.4524% 21.2582%',
       cta: { label: 'Learn More', href: '/our-story' },
     },
   ],

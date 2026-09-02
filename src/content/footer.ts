@@ -4,6 +4,7 @@ export const footer = {
   subscribeSuccess: 'Thanks for subscribing.',
   subscribeAlready: "You're already on the list.",
   emailLabel: 'Email',
+  countryLabel: 'Country/region',
   instagram: {
     label: 'Instagram',
     href: 'https://instagram.com/cognitiveblends',

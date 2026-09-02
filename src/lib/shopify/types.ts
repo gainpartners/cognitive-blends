@@ -111,3 +111,14 @@ export type Localization = {
   country: MarketCountry;
   availableCountries: MarketCountry[];
 };
+
+export type PredictiveSearchResult = {
+  products: {
+    id: string;
+    handle: string;
+    title: string;
+    featuredImage?: ShopifyImage | null;
+  }[];
+  queries: { text: string }[];
+  pages: { title: string; handle: string }[];
+};

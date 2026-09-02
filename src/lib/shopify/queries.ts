@@ -188,6 +188,32 @@ export const CUSTOMER_CREATE = `#graphql
   }
 `;
 
+export const PREDICTIVE_SEARCH_QUERY = `#graphql
+  query PredictiveSearch($query: String!, $country: CountryCode) @inContext(country: $country) {
+    predictiveSearch(query: $query, limit: 8, types: [PRODUCT, QUERY, PAGE]) {
+      products {
+        id
+        handle
+        title
+        featuredImage { url altText width height }
+      }
+      queries { text }
+      pages { title handle }
+    }
+  }
+`;
+
+export const SEARCH_QUERY = `#graphql
+  query CatalogSearch($query: String!, $country: CountryCode) @inContext(country: $country) {
+    search(query: $query, first: 24, types: PRODUCT) {
+      nodes {
+        ... on Product { ...ProductCardFields }
+      }
+    }
+  }
+  ${PRODUCT_CARD_FIELDS}
+`;
+
 export const LOCALIZATION_QUERY = `#graphql
   query Localization($country: CountryCode) @inContext(country: $country) {
     localization {

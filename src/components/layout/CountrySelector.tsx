@@ -3,13 +3,18 @@
 import { useEffect, useId, useMemo, useRef, useState, useTransition } from 'react';
 import { setCountryAction } from '@/app/actions/country';
 import type { MarketCountry } from '@/lib/shopify/types';
+import { CaretIcon } from './icons';
 
 export function CountrySelector({
   current,
   countries,
+  label,
+  variant = 'plain',
 }: {
   current: MarketCountry;
   countries: MarketCountry[];
+  label?: string;
+  variant?: 'plain' | 'select';
 }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
@@ -66,17 +71,30 @@ export function CountrySelector({
   }
 
   return (
-    <div className="locale-picker" ref={rootRef} aria-busy={pending}>
+    <div
+      className={variant === 'select' ? 'locale-picker locale-picker--select' : 'locale-picker'}
+      ref={rootRef}
+      aria-busy={pending}
+    >
+      {label ? (
+        <p className="locale-picker__label" id={`${listId}-label`}>
+          {label}
+        </p>
+      ) : null}
       <button
         type="button"
         className="locale-picker__toggle"
         aria-expanded={open}
         aria-haspopup="listbox"
         aria-controls={listId}
+        aria-describedby={label ? `${listId}-label` : undefined}
         onClick={() => setOpen((value) => !value)}
         disabled={pending}
       >
-        {current.name} | {current.currency.isoCode} {current.currency.symbol}
+        <span>
+          {current.name} | {current.currency.isoCode} {current.currency.symbol}
+        </span>
+        {variant === 'select' ? <CaretIcon /> : null}
       </button>
       {open ? (
         <div className="locale-picker__panel" id={listId} role="listbox">
