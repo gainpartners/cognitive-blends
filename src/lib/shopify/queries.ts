@@ -26,7 +26,7 @@ const PRODUCT_CARD_FIELDS = `#graphql
 `;
 
 export const PRODUCTS_QUERY = `#graphql
-  query Products {
+  query Products($country: CountryCode) @inContext(country: $country) {
     products(first: 20) {
       nodes { ...ProductCardFields }
     }
@@ -35,7 +35,7 @@ export const PRODUCTS_QUERY = `#graphql
 `;
 
 export const FRONTPAGE_QUERY = `#graphql
-  query Frontpage {
+  query Frontpage($country: CountryCode) @inContext(country: $country) {
     collection(handle: "frontpage") {
       products(first: 12) {
         nodes { ...ProductCardFields }
@@ -46,7 +46,7 @@ export const FRONTPAGE_QUERY = `#graphql
 `;
 
 export const PRODUCT_QUERY = `#graphql
-  query Product($handle: String!) {
+  query Product($handle: String!, $country: CountryCode) @inContext(country: $country) {
     product(handle: $handle) {
       id
       handle
@@ -110,6 +110,7 @@ export const CART_FRAGMENT = `#graphql
     id
     checkoutUrl
     totalQuantity
+    buyerIdentity { countryCode }
     cost { totalAmount { amount currencyCode } }
     lines(first: 50) {
       nodes {
@@ -132,14 +133,14 @@ export const CART_FRAGMENT = `#graphql
 `;
 
 export const CART_QUERY = `#graphql
-  query Cart($id: ID!) {
+  query Cart($id: ID!, $country: CountryCode) @inContext(country: $country) {
     cart(id: $id) { ...CartFields }
   }
   ${CART_FRAGMENT}
 `;
 
 export const CART_CREATE = `#graphql
-  mutation CartCreate($input: CartInput!) {
+  mutation CartCreate($input: CartInput!, $country: CountryCode) @inContext(country: $country) {
     cartCreate(input: $input) {
       cart { ...CartFields }
       userErrors { field message }
@@ -149,7 +150,7 @@ export const CART_CREATE = `#graphql
 `;
 
 export const CART_LINES_ADD = `#graphql
-  mutation CartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
+  mutation CartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!, $country: CountryCode) @inContext(country: $country) {
     cartLinesAdd(cartId: $cartId, lines: $lines) {
       cart { ...CartFields }
       userErrors { field message }
@@ -159,11 +160,47 @@ export const CART_LINES_ADD = `#graphql
 `;
 
 export const CART_LINES_REMOVE = `#graphql
-  mutation CartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
+  mutation CartLinesRemove($cartId: ID!, $lineIds: [ID!]!, $country: CountryCode) @inContext(country: $country) {
     cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
       cart { ...CartFields }
       userErrors { field message }
     }
   }
   ${CART_FRAGMENT}
+`;
+
+export const CART_BUYER_IDENTITY_UPDATE = `#graphql
+  mutation CartBuyerIdentityUpdate($cartId: ID!, $buyerIdentity: CartBuyerIdentityInput!, $country: CountryCode) @inContext(country: $country) {
+    cartBuyerIdentityUpdate(cartId: $cartId, buyerIdentity: $buyerIdentity) {
+      cart { ...CartFields }
+      userErrors { field message }
+    }
+  }
+  ${CART_FRAGMENT}
+`;
+
+export const CUSTOMER_CREATE = `#graphql
+  mutation CustomerCreate($input: CustomerCreateInput!, $country: CountryCode) @inContext(country: $country) {
+    customerCreate(input: $input) {
+      customer { id }
+      customerUserErrors { code field message }
+    }
+  }
+`;
+
+export const LOCALIZATION_QUERY = `#graphql
+  query Localization($country: CountryCode) @inContext(country: $country) {
+    localization {
+      country {
+        isoCode
+        name
+        currency { isoCode symbol name }
+      }
+      availableCountries {
+        isoCode
+        name
+        currency { isoCode symbol name }
+      }
+    }
+  }
 `;

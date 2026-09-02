@@ -14,6 +14,18 @@ export function formatMoney(
   }).format(value);
 }
 
+export function formatEuroComma(amount: string | number): string {
+  const value = typeof amount === 'string' ? Number.parseFloat(amount) : amount;
+  if (!Number.isFinite(value)) return '';
+  return `€${value.toFixed(2).replace('.', ',')}`;
+}
+
+export function formatPlainAmount(amount: string | number): string {
+  const value = typeof amount === 'string' ? Number.parseFloat(amount) : amount;
+  if (!Number.isFinite(value)) return '';
+  return value.toFixed(2);
+}
+
 export function productNumericId(gid: string): string {
   const match = gid.match(/Product\/(\d+)/);
   return match?.[1] ?? '';

@@ -1,7 +1,19 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { formatEuroComma, formatMoney, formatPlainAmount } from '@/lib/utils';
 import { Price } from './Price';
 import { StarRating } from './StarRating';
+
+function shopAmount(
+  amount: string,
+  currencyCode: string,
+  subscribe: boolean,
+): string {
+  if (currencyCode === 'EUR') {
+    return subscribe ? formatPlainAmount(amount) : formatEuroComma(amount);
+  }
+  return formatMoney(amount, currencyCode);
+}
 
 export type ProductCardData = {
   handle: string;
@@ -15,9 +27,12 @@ export type ProductCardData = {
   subscribeLabel?: string;
   rating?: number | null;
   ratingCount?: number | null;
+  showRating?: boolean;
 };
 
 export function ProductCard({ product }: { product: ProductCardData }) {
+  const shopLayout = Boolean(product.oneTimeLabel);
+
   return (
     <Link href={`/products/${product.handle}`} className="product-card">
       <div className="product-card__image">
@@ -38,20 +53,36 @@ export function ProductCard({ product }: { product: ProductCardData }) {
           ) : null}
           {product.compareAtAmount ? (
             <span className="product-card__compare">
-              <Price amount={product.compareAtAmount} currencyCode={product.currencyCode} />
+              {shopLayout ? (
+                shopAmount(product.compareAtAmount, product.currencyCode, false)
+              ) : (
+                <Price amount={product.compareAtAmount} currencyCode={product.currencyCode} />
+              )}
             </span>
           ) : null}
-          <Price amount={product.amount} currencyCode={product.currencyCode} />
+          {shopLayout ? (
+            <span className="price">{shopAmount(product.amount, product.currencyCode, false)}</span>
+          ) : (
+            <Price amount={product.amount} currencyCode={product.currencyCode} />
+          )}
         </div>
         {product.subscribeAmount ? (
           <div className="product-card__subscribe">
             {product.subscribeLabel ? (
               <span className="product-card__price-label">{product.subscribeLabel}</span>
             ) : null}
-            <Price amount={product.subscribeAmount} currencyCode={product.currencyCode} />
+            {shopLayout ? (
+              <span className="price">
+                {shopAmount(product.subscribeAmount, product.currencyCode, true)}
+              </span>
+            ) : (
+              <Price amount={product.subscribeAmount} currencyCode={product.currencyCode} />
+            )}
           </div>
         ) : null}
-        <StarRating value={product.rating ?? null} count={product.ratingCount} />
+        {product.showRating === false ? null : (
+          <StarRating value={product.rating ?? null} count={product.ratingCount} />
+        )}
       </div>
     </Link>
   );

@@ -65,7 +65,9 @@ export function PurchaseForm({
           />
           <span>
             <Badge tone="onetime">One-time</Badge>
-            <div>{variant.price.amount} {variant.price.currencyCode}</div>
+            <div>
+              <Price amount={variant.price.amount} currencyCode={variant.price.currencyCode} />
+            </div>
           </span>
         </label>
 

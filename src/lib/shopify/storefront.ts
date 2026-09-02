@@ -5,6 +5,8 @@ import {
   storefrontEndpoint,
 } from '@/lib/config/server';
 import { logger } from '@/lib/log';
+import { DEFAULT_COUNTRY, isCountryContextError } from './country-code';
+import { getBuyerIp, getCountryCode, pinAppliedCountry } from './country';
 
 const log = logger('storefront');
 
@@ -69,59 +71,82 @@ export async function storefrontFetch<T>(
     headers['X-Shopify-Storefront-Access-Token'] = token;
   }
 
-  let response: Response;
-  try {
-    response = await fetch(storefrontEndpoint(), {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ query, variables }),
-      cache: options?.cache ?? 'no-store',
-      next:
-        options?.revalidate != null ? { revalidate: options.revalidate } : undefined,
-      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
-    });
-  } catch (error) {
-    const timedOut = error instanceof Error && error.name === 'TimeoutError';
-    fail(
-      timedOut ? 'Storefront request timed out' : 'Could not reach Shopify',
-      504,
-      {
+  const country = await getCountryCode();
+  const buyerIp = await getBuyerIp();
+  if (buyerIp) headers['Shopify-Storefront-Buyer-IP'] = buyerIp;
+
+  const execute = async (countryCode: string): Promise<T> => {
+    const payloadVariables = { ...variables, country: countryCode };
+
+    let response: Response;
+    try {
+      response = await fetch(storefrontEndpoint(), {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ query, variables: payloadVariables }),
+        cache: options?.cache ?? 'no-store',
+        next:
+          options?.revalidate != null ? { revalidate: options.revalidate } : undefined,
+        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+      });
+    } catch (error) {
+      const timedOut = error instanceof Error && error.name === 'TimeoutError';
+      fail(
+        timedOut ? 'Storefront request timed out' : 'Could not reach Shopify',
+        504,
+        {
+          operation,
+          timedOut,
+          name: error instanceof Error ? error.name : 'unknown',
+        },
+      );
+    }
+
+    const raw = await response.text();
+    let payload: { data?: T; errors?: { message: string }[] };
+    try {
+      payload = raw ? JSON.parse(raw) : {};
+    } catch {
+      fail('Storefront returned a malformed response', 502, {
         operation,
-        timedOut,
-        name: error instanceof Error ? error.name : 'unknown',
-      },
-    );
-  }
+        status: response.status,
+        body: raw.slice(0, 300),
+      }, raw.slice(0, 500));
+    }
 
-  const raw = await response.text();
-  let payload: { data?: T; errors?: { message: string }[] };
+    if (!response.ok) {
+      fail(`Storefront HTTP ${response.status}`, response.status, {
+        operation,
+        status: response.status,
+      }, payload);
+    }
+
+    if (payload.errors?.length) {
+      fail(payload.errors[0].message, 502, {
+        operation,
+        errors: payload.errors.map((entry) => entry.message),
+      }, payload.errors);
+    }
+
+    if (!payload.data) {
+      fail('Storefront returned no data', 502, { operation }, payload);
+    }
+
+    return payload.data;
+  };
+
   try {
-    payload = raw ? JSON.parse(raw) : {};
-  } catch {
-    fail('Storefront returned a malformed response', 502, {
-      operation,
-      status: response.status,
-      body: raw.slice(0, 300),
-    }, raw.slice(0, 500));
+    return await execute(country);
+  } catch (error) {
+    if (
+      error instanceof StorefrontError &&
+      country !== DEFAULT_COUNTRY &&
+      isCountryContextError(error.message)
+    ) {
+      log.warn('country context rejected; retrying default market', { country });
+      pinAppliedCountry(DEFAULT_COUNTRY);
+      return execute(DEFAULT_COUNTRY);
+    }
+    throw error;
   }
-
-  if (!response.ok) {
-    fail(`Storefront HTTP ${response.status}`, response.status, {
-      operation,
-      status: response.status,
-    }, payload);
-  }
-
-  if (payload.errors?.length) {
-    fail(payload.errors[0].message, 502, {
-      operation,
-      errors: payload.errors.map((entry) => entry.message),
-    }, payload.errors);
-  }
-
-  if (!payload.data) {
-    fail('Storefront returned no data', 502, { operation }, payload);
-  }
-
-  return payload.data;
 }

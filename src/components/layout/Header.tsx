@@ -4,12 +4,18 @@ import { getCart } from '@/lib/shopify/cart';
 import { isStorefrontConfigured, shopifyHostedAccountUrl } from '@/lib/config/server';
 import { brand } from '@/content/brand';
 import { homeHref } from '@/content/nav';
-import { AccountIcon, CartIcon, SearchIcon } from './icons';
+import { getLocalization } from '@/lib/shopify/localization';
+import { AccountIcon, CartIcon } from './icons';
+import { CountrySelector } from './CountrySelector';
+import { HeaderSearch } from './HeaderSearch';
 import { NavDrawer } from './NavDrawer';
 import { NavLinks } from './NavLinks';
 
 export async function Header() {
-  const cart = isStorefrontConfigured() ? await getCart() : null;
+  const configured = isStorefrontConfigured();
+  const [cart, localization] = configured
+    ? await Promise.all([getCart(), getLocalization()])
+    : [null, null];
   const accountUrl = shopifyHostedAccountUrl() ?? '/account';
   const qty = cart?.totalQuantity ?? 0;
 
@@ -17,7 +23,10 @@ export async function Header() {
     <header className="site-header">
       <div className="shell site-header__inner">
         <div className="site-header__bar">
-          <NavDrawer />
+          <div className="header-left">
+            <NavDrawer />
+            <HeaderSearch className="header-search--desktop" />
+          </div>
           <Link href={homeHref} className="wordmark">
             <Image
               src={brand.logo.wordmark}
@@ -28,15 +37,14 @@ export async function Header() {
             />
           </Link>
           <div className="header-tools">
-            <details className="header-search">
-              <summary className="header-icon" aria-label="Search">
-                <SearchIcon />
-              </summary>
-              <form role="search" action="/" method="get">
-                <input type="search" name="q" placeholder="Search" aria-label="Search" />
-              </form>
-            </details>
-            <a href={accountUrl} className="header-icon" aria-label="Account">
+            {localization ? (
+              <CountrySelector
+                current={localization.country}
+                countries={localization.availableCountries}
+              />
+            ) : null}
+            <HeaderSearch className="header-search--mobile" />
+            <a href={accountUrl} className="header-icon header-account" aria-label="Account">
               <AccountIcon />
             </a>
             <Link

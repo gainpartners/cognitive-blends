@@ -2,11 +2,10 @@ import { PurchaseCtas } from '@/components/content/PurchaseCtas';
 import { SignupForm } from '@/components/content/SignupForm';
 import { Button } from '@/components/ui/Button';
 import { ProductCard } from '@/components/ui/ProductCard';
-import { parseRatingValue, StarRating } from '@/components/ui/StarRating';
+import { StarRating } from '@/components/ui/StarRating';
 import {
   hero,
   popularProducts,
-  signup,
   statsPanel,
   testimonials,
   thriveOneFeatures,
@@ -55,8 +54,6 @@ export default async function HomePage() {
 
       <section className="section signup">
         <div className="shell signup__inner">
-          <h2 className="section-title">{signup.heading}</h2>
-          <p>{signup.body}</p>
           <SignupForm />
         </div>
       </section>
@@ -194,7 +191,14 @@ async function PopularProducts() {
       <div className="shell">
         <h2 className="section-title section-title--center">{popularProducts.heading}</h2>
         <div className="product-grid">
-          {products.map((product) => {
+          {[...products]
+            .sort((a, b) => {
+              const order = popularProducts.handles;
+              const ai = order.indexOf(a.handle);
+              const bi = order.indexOf(b.handle);
+              return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+            })
+            .map((product) => {
             const oneTime = oneTimePrice(product);
             const compare = compareAtPrice(product);
             const subscribe = subscribePrice(product);
@@ -211,10 +215,7 @@ async function PopularProducts() {
                   subscribeAmount: subscribe?.amount,
                   oneTimeLabel: popularProducts.oneTimeLabel,
                   subscribeLabel: popularProducts.subscribeLabel,
-                  rating: parseRatingValue(product.rating?.value),
-                  ratingCount: product.ratingCount?.value
-                    ? Number.parseInt(product.ratingCount.value, 10)
-                    : null,
+                  showRating: false,
                 }}
               />
             );

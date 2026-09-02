@@ -13,6 +13,7 @@ export const popularProducts = {
   heading: 'Most Popular Products',
   oneTimeLabel: 'One-time:',
   subscribeLabel: 'Subscribe and save:',
+  handles: ['mindbodybundle', 'creatine-sachets-box-of-30', 'thriveone'],
 };
 
 export const thriveOneFeatures = {
@@ -77,6 +78,9 @@ export const signup = {
   submit: 'Submit',
   disclaimer:
     'By signing up, you agree to receive marketing emails. View our privacy policy and terms of service for more info.',
+  successHeading: 'Success',
+  successText: 'Thank you. The form has been submitted.',
+  alreadyOnList: "You're already on the list.",
 };
 
 export const testimonials = {

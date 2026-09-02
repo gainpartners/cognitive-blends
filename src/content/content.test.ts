@@ -12,7 +12,7 @@ describe('nav', () => {
   it('keeps live labels in order', () => {
     assert.deepEqual(
       navLinks.map((link) => link.label),
-      ['What Is ThriveOne?', 'Online Store', 'Our Story', 'Contact'],
+      ['Home', 'What Is ThriveOne?', 'Online Store', 'Our Story', 'Contact'],
     );
   });
 });
@@ -41,6 +41,9 @@ describe('verbatim copy', () => {
 
   it('keeps homepage signup and stats copy', () => {
     assert.equal(signup.heading, 'Sign up and Save');
+    assert.equal(signup.successHeading, 'Success');
+    assert.equal(signup.successText, 'Thank you. The form has been submitted.');
+    assert.equal(signup.alreadyOnList, "You're already on the list.");
     assert.equal(statsPanel.stats[0].value, '88%');
     assert.equal(testimonials.quotes.length, 4);
   });

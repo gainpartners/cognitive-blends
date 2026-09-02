@@ -1,8 +1,12 @@
 import { copyrightLine, footer } from '@/content/footer';
+import { isStorefrontConfigured } from '@/lib/config/server';
+import { getLocalization } from '@/lib/shopify/localization';
+import { CountrySelector } from './CountrySelector';
 import { FooterSubscribe } from './FooterSubscribe';
 
-export function Footer() {
+export async function Footer() {
   const year = new Date().getFullYear();
+  const localization = isStorefrontConfigured() ? await getLocalization() : null;
 
   return (
     <footer className="site-footer">
@@ -13,6 +17,12 @@ export function Footer() {
             {footer.instagram.label}
           </a>
         </p>
+        {localization ? (
+          <CountrySelector
+            current={localization.country}
+            countries={localization.availableCountries}
+          />
+        ) : null}
         <p>{copyrightLine(year)}</p>
       </div>
     </footer>

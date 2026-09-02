@@ -98,4 +98,16 @@ export type Cart = {
   totalQuantity: number;
   cost: { totalAmount: Money };
   lines: { nodes: CartLine[] };
+  buyerIdentity?: { countryCode?: string | null } | null;
+};
+
+export type MarketCountry = {
+  isoCode: string;
+  name: string;
+  currency: { isoCode: string; symbol: string; name: string };
+};
+
+export type Localization = {
+  country: MarketCountry;
+  availableCountries: MarketCountry[];
 };
