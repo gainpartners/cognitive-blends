@@ -2316,8 +2316,11 @@ form input[type="password"] {
   aspect-ratio: 1;
 }
 
-.product-gallery__slide[hidden] {
-  display: none;
+.product-gallery__slide[aria-hidden='true'] {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .product-gallery__slide img {

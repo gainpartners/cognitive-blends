@@ -33,7 +33,6 @@ export function ProductGallery({
           <div
             key={image.url}
             className="product-gallery__slide"
-            hidden={i !== index}
             aria-hidden={i !== index}
             aria-label={`${i + 1} of ${count}`}
           >
@@ -43,6 +42,9 @@ export function ProductGallery({
               fill
               sizes={imageSizes.pdp}
               preload={i === 0}
+              fetchPriority={i === 0 ? 'high' : 'low'}
+              loading="eager"
+              decoding="async"
             />
           </div>
         ))}
@@ -90,6 +92,8 @@ export function ProductGallery({
                   width={image.width ?? 88}
                   height={image.height ?? 88}
                   sizes={imageSizes.galleryThumb}
+                  loading="lazy"
+                  decoding="async"
                 />
               </button>
             </li>
