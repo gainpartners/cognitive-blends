@@ -9,6 +9,9 @@ export const footer = {
     label: 'Instagram',
     href: 'https://instagram.com/cognitiveblends',
   },
+  privacy: 'Privacy',
+  cookiePolicy: 'Cookie policy',
+  cookieSettings: 'Cookie settings',
 };
 
 export function copyrightLine(year: number): string {

@@ -1,5 +1,8 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { Assistant, EB_Garamond } from 'next/font/google';
+import { Consent } from '@/components/analytics/Consent';
+import { PostHogProvider } from '@/components/analytics/PostHogProvider';
 import { shouldNoIndex } from '@/lib/access';
 import './globals.css';
 
@@ -27,7 +30,13 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en-IE" className={`${assistant.variable} ${garamond.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Suspense fallback={null}>
+          <PostHogProvider />
+        </Suspense>
+        <Consent />
+      </body>
     </html>
   );
 }

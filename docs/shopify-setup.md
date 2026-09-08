@@ -50,6 +50,8 @@ A `shpat_…` value is Admin API and will 401 on Storefront. The public token is
 
 Never commit this token. Never paste it into chat.
 
+The public token is also used in the browser to tell Shopify about cookie consent (so Shop Follow does not show Shopify’s own banner). Do not put a private `shfpt_` / `shpss_` token in `SHOPIFY_STOREFRONT_API_TOKEN`.
+
 ### Product metafields
 
 In admin, expose to the Storefront API:

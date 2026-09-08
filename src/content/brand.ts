@@ -143,6 +143,11 @@ export const pages = [
     url: '/cart',
     desc: 'Cart is Shopify checkoutUrl. Search uses Storefront predictive search. Account is hosted Shopify, not a custom portal.',
   },
+  {
+    page: 'Privacy / cookies',
+    url: '/cookie-policy',
+    desc: 'First-party cookie banner. Analytics (GA / PostHog) only after accept. Same CookieConsent as the shop.',
+  },
 ] as const;
 
 export const motionRules = [

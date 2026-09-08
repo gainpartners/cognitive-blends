@@ -3,6 +3,7 @@
 import { useActionState } from 'react';
 import { subscribeAction } from '@/app/actions/subscribe';
 import { idleSubscribeState } from '@/lib/shopify/subscribe-fields';
+import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Field } from '@/components/ui/Field';
 import { signup } from '@/content/home';
@@ -68,7 +69,12 @@ export function SignupForm() {
           {pending ? 'Submitting…' : signup.submit}
         </Button>
         {state.error ? <p className="error-text">{state.error}</p> : null}
-        <p className="signup-form__disclaimer">{signup.disclaimer}</p>
+        <p className="signup-form__disclaimer">
+          {signup.disclaimerLead}{' '}
+          <Link href="/privacy">{signup.disclaimerPrivacy}</Link> and{' '}
+          <Link href="/cookie-policy">{signup.disclaimerCookies}</Link>{' '}
+          {signup.disclaimerTail}
+        </p>
       </form>
     </>
   );

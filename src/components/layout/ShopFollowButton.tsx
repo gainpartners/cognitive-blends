@@ -1,7 +1,12 @@
 'use client';
 
-import { createElement } from 'react';
+import { createElement, useSyncExternalStore } from 'react';
 import Script from 'next/script';
+import { useConsent } from '@/components/analytics/useConsent';
+import {
+  getShopifyConsentSync,
+  subscribeShopifyConsentSync,
+} from '@/lib/shopify/customer-privacy';
 
 export function ShopFollowButton({
   shop,
@@ -10,6 +15,16 @@ export function ShopFollowButton({
   shop: string;
   returnUri: string;
 }) {
+  const { ready, consent } = useConsent();
+  const sync = useSyncExternalStore(
+    (onChange) => subscribeShopifyConsentSync(() => onChange()),
+    getShopifyConsentSync,
+    () => null,
+  );
+
+  if (!ready || consent?.analytics !== true) return null;
+  if (!sync?.ok) return null;
+
   return (
     <div className="shop-follow">
       <Script id="shop-follow-shop" strategy="afterInteractive">

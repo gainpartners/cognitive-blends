@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { copyrightLine, footer } from './footer';
 import { hero, signup, statsPanel, testimonials, thriveOneFeatures, whoWeAre } from './home';
+import { cookiePolicy, privacyPolicy } from './pages/legal';
 import { navLinks } from './nav';
 import { contactPage } from './pages/contact';
 import { ourStory } from './pages/our-story';
@@ -48,6 +49,10 @@ describe('verbatim copy', () => {
     assert.equal(signup.heading, 'Sign up and Save');
     assert.equal(signup.successHeading, 'Success');
     assert.equal(signup.successText, 'Thank you. The form has been submitted.');
+    assert.equal(
+      `${signup.disclaimerLead} ${signup.disclaimerPrivacy} and ${signup.disclaimerCookies} ${signup.disclaimerTail}`,
+      'By signing up, you agree to receive marketing emails. View our privacy policy and cookie policy for more info.',
+    );
     assert.equal(signup.alreadyOnList, "You're already on the list.");
     assert.equal(statsPanel.stats[0].value, '88%');
     assert.equal(testimonials.quotes.length, 4);
@@ -70,5 +75,19 @@ describe('footer', () => {
     );
     assert.equal(footer.instagram.href, 'https://instagram.com/cognitiveblends');
     assert.equal(footer.countryLabel, 'Country/region');
+    assert.equal(footer.privacy, 'Privacy');
+    assert.equal(footer.cookiePolicy, 'Cookie policy');
+    assert.equal(footer.cookieSettings, 'Cookie settings');
+  });
+});
+
+describe('legal', () => {
+  it('keeps cookie and privacy routes named', () => {
+    assert.equal(cookiePolicy.title, 'Cookie policy');
+    assert.equal(privacyPolicy.title, 'Privacy policy');
+    assert.equal(
+      `${signup.disclaimerLead} ${signup.disclaimerPrivacy} and ${signup.disclaimerCookies} ${signup.disclaimerTail}`,
+      'By signing up, you agree to receive marketing emails. View our privacy policy and cookie policy for more info.',
+    );
   });
 });

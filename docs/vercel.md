@@ -55,6 +55,17 @@ Do **not** set `CUSTOMER_ACCOUNT_API_CLIENT_ID`, `CUSTOMER_ACCOUNT_API_VERSION`,
 | `JUDGEME_SHOP_DOMAIN` | `zzqvvg-ma.myshopify.com` | |
 | `APPSTLE_SUBSCRIPTIONS_APP_NAME` | `appstle` | Default is `appstle`. New subscribers only |
 
+### Analytics (optional)
+
+Leave blank until you have a measurement ID / project key. The cookie banner still shows. Scripts load only after accept.
+
+| Name | Example | Notes |
+| --- | --- | --- |
+| `NEXT_PUBLIC_GA4_ID` | `G-XXXXXXXX` | Google Analytics 4. Feature flag |
+| `NEXT_PUBLIC_POSTHOG_KEY` | `phc_…` | PostHog project key. Feature flag |
+| `NEXT_PUBLIC_POSTHOG_HOST` | `https://eu.i.posthog.com` | Default is EU cloud |
+| `NEXT_PUBLIC_STOREFRONT_DOMAIN` | `cognitiveblends.com` | Shared root with checkout so Shopify consent cookies match. Feature flag |
+
 ### Preview gate
 
 | Name | Example | Notes |

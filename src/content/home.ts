@@ -78,8 +78,11 @@ export const signup = {
   lastName: 'Last name',
   email: 'Email',
   submit: 'Submit',
-  disclaimer:
-    'By signing up, you agree to receive marketing emails. View our privacy policy and terms of service for more info.',
+  disclaimerLead:
+    'By signing up, you agree to receive marketing emails. View our',
+  disclaimerPrivacy: 'privacy policy',
+  disclaimerCookies: 'cookie policy',
+  disclaimerTail: 'for more info.',
   successHeading: 'Success',
   successText: 'Thank you. The form has been submitted.',
   alreadyOnList: "You're already on the list.",

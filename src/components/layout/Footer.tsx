@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { copyrightLine, footer } from '@/content/footer';
 import {
   SHOPIFY_STORE_DOMAIN,
@@ -9,6 +10,7 @@ import { CountrySelector } from './CountrySelector';
 import { FooterSubscribe } from './FooterSubscribe';
 import { InstagramIcon } from './icons';
 import { ShopFollowButton } from './ShopFollowButton';
+import { CookieSettingsLink } from './CookieSettingsLink';
 
 export async function Footer() {
   const year = new Date().getFullYear();
@@ -45,6 +47,11 @@ export async function Footer() {
             />
           ) : null}
           <p className="site-footer__copy">{copyrightLine(year)}</p>
+          <nav className="site-footer__legal" aria-label="Legal">
+            <Link href="/privacy">{footer.privacy}</Link>
+            <Link href="/cookie-policy">{footer.cookiePolicy}</Link>
+            <CookieSettingsLink>{footer.cookieSettings}</CookieSettingsLink>
+          </nav>
         </div>
       </div>
     </footer>
