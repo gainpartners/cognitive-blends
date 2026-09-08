@@ -34,7 +34,8 @@ function NavDrawerInner({
     if (!header) return;
 
     function syncHeight() {
-      const height = header.getBoundingClientRect().height;
+      const height = header?.getBoundingClientRect().height;
+      if (height == null) return;
       document.documentElement.style.setProperty('--nav-h', `${height}px`);
     }
 

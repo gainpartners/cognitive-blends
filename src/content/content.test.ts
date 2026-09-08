@@ -64,8 +64,8 @@ describe('verbatim copy', () => {
     assert.equal(onlineStore.heading, 'Best Sellers');
     assert.equal(contactPage.heading, 'Contact Us');
     assert.equal(contactPage.intro.length, 3);
-    const faqs = thriveoneAccordion.find((section) => section.title === 'FAQs');
-    assert.ok(faqs && 'faqs' in faqs && faqs.faqs.length === 4);
+    const faqs = thriveoneAccordion.find((section) => section.title === 'FAQs')?.faqs;
+    assert.equal(faqs?.length, 4);
     assert.deepEqual(accordionFor('thriveone')?.map((section) => section.title), [
       "What's Inside?",
       "Where's It Made?",
