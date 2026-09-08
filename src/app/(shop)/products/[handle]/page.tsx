@@ -4,7 +4,11 @@ import { ProductAccordion } from '@/components/shop/ProductAccordion';
 import { ProductGallery } from '@/components/shop/ProductGallery';
 import { PurchaseForm } from '@/components/shop/PurchaseForm';
 import { Reviews } from '@/components/shop/Reviews';
-import { APPSTLE_SUBSCRIPTIONS_APP_NAME, isStorefrontConfigured } from '@/lib/config/server';
+import {
+  APPSTLE_SUBSCRIPTIONS_APP_NAME,
+  isStorefrontConfigured,
+  shopOrigin,
+} from '@/lib/config/server';
 import { logger } from '@/lib/log';
 import { getProduct } from '@/lib/shopify/products';
 import { purchasePlans } from '@/lib/shopify/selling-plans';
@@ -49,31 +53,34 @@ export default async function ProductPage({
     ? Number.parseInt(product.ratingCount.value, 10)
     : null;
   return (
-    <div className="shell stack">
-      <div className="product-layout">
-        <ProductGallery images={product.images.nodes} productTitle={product.title} />
-        <div className="stack">
-          <h1 className="page-title" style={{ marginTop: 0 }}>
-            {product.title}
-          </h1>
-          <StarRating value={rating} count={ratingCount} />
-          <PurchaseForm
-            productHandle={product.handle}
-            variant={variant}
-            plans={plans}
-          />
+    <div className="product-page">
+      <div className="shell stack">
+        <div className="product-layout">
+          <ProductGallery images={product.images.nodes} productTitle={product.title} />
+          <div className="stack">
+            <h1 className="page-title" style={{ marginTop: 0 }}>
+              {product.title}
+            </h1>
+            <StarRating value={rating} count={ratingCount} />
+            <PurchaseForm
+              productHandle={product.handle}
+              variant={variant}
+              plans={plans}
+              shopOrigin={shopOrigin()}
+            />
+          </div>
         </div>
+        <div
+          className="prose"
+          dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+        />
+        {handle === 'thriveone' ? <ProductAccordion /> : null}
+        <Reviews
+          externalId={productNumericId(product.id)}
+          rating={rating}
+          count={ratingCount}
+        />
       </div>
-      <div
-        className="prose"
-        dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
-      />
-      {handle === 'thriveone' ? <ProductAccordion /> : null}
-      <Reviews
-        externalId={productNumericId(product.id)}
-        rating={rating}
-        count={ratingCount}
-      />
     </div>
   );
 }

@@ -2246,6 +2246,46 @@ form input[type="password"] {
   flex-wrap: wrap;
 }
 
+.product-page {
+  --bg: #f3f3f3;
+  --bg-tint: #ffffff;
+  --bg-raised: #ffffff;
+  --ink: #121212;
+  --ink-soft: rgba(18, 18, 18, 0.75);
+  --ink-mute: #6d7175;
+  --line: #e0e0e0;
+  --line-strong: #cfcfcf;
+  --error: #af161d;
+  background: var(--bg);
+  color: var(--ink-soft);
+  padding: var(--space-6) 0 var(--space-8);
+}
+
+.product-page .qty__control {
+  border-color: var(--ink);
+}
+
+.product-page .purchase-option {
+  background: #ffffff;
+}
+
+.product-page .badge--best {
+  color: #ffffff;
+}
+
+.product-page .shop-pay {
+  width: 100%;
+  min-height: 42px;
+  --shop-pay-button-width: 100%;
+  --shop-pay-button-height: 42px;
+}
+
+.product-page .shop-pay shop-pay-button {
+  display: block;
+  width: 100%;
+  min-height: 42px;
+}
+
 .product-layout {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;

@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Price } from '@/components/ui/Price';
 import { QtyStepper } from '@/components/ui/QtyStepper';
+import { ShopPayButton } from '@/components/layout/ShopPayButton';
 import {
   bestValuePlanId,
   optionPricing,
@@ -48,10 +49,12 @@ export function PurchaseForm({
   productHandle,
   variant,
   plans,
+  shopOrigin,
 }: {
   productHandle: string;
   variant: ProductVariant | undefined;
   plans: SellingPlan[];
+  shopOrigin?: string;
 }) {
   const [planId, setPlanId] = useState(plans[0]?.id ?? '');
   const [quantity, setQuantity] = useState(1);
@@ -159,6 +162,13 @@ export function PurchaseForm({
       <Button type="submit" disabled={pending || !variant.availableForSale}>
         {pending ? 'Adding…' : variant.availableForSale ? 'Add to cart' : 'Sold out'}
       </Button>
+      {shopOrigin && variant.availableForSale ? (
+        <ShopPayButton
+          storeUrl={shopOrigin}
+          variantId={variant.id}
+          quantity={quantity}
+        />
+      ) : null}
       {done ? (
         <p>
           Added to cart. <a href="/cart">View cart</a>
