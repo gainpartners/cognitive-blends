@@ -26,7 +26,7 @@ export function HeaderShell({
         <SearchProvider>
           <div className="site-header__bar">
             <div className="header-left">
-              <NavDrawer />
+              <NavDrawer accountUrl={accountUrl} localization={localization} />
             </div>
             <Link href={homeHref} className="wordmark">
               <Image

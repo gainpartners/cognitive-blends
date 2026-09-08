@@ -46,6 +46,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
             sizes={imageSizes.card}
           />
         ) : null}
+        {product.compareAtAmount ? <span className="product-card__sale">Sale</span> : null}
       </div>
       <div className="product-card__body">
         <h2>{product.title}</h2>

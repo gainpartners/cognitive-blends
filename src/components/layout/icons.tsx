@@ -52,7 +52,7 @@ export function AccountIcon() {
 
 export function CartIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 40 40" aria-hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="11 7 18.5 23" aria-hidden>
       <path
         fill="currentColor"
         fillRule="evenodd"
@@ -83,6 +83,23 @@ export function CaretIcon() {
         fill="currentColor"
         fillRule="evenodd"
         d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+}
+
+export function QuestionIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20" aria-hidden>
+      <path
+        fill="currentColor"
+        d="M9.563 11.959a.367.367 0 0 1-.367-.367v-.127c-.003-.49.084-.91.316-1.303.227-.384.575-.715 1.04-1.063.415-.311.666-.566.817-.81a1.43 1.43 0 0 0 .208-.795v-.013c0-.894-.657-1.531-1.568-1.531-.862 0-1.527.606-1.612 1.609a.37.37 0 0 1-.097.219l-.006.006a.37.37 0 0 1-.264.117l-.471.007a.367.367 0 0 1-.362-.453c.112-1.519 1.219-2.712 2.825-2.712 1.603 0 2.791 1.176 2.791 2.718v.013c0 .512-.114.965-.366 1.387-.248.416-.619.783-1.101 1.145l-.003.002c-.414.305-.637.526-.764.738-.12.2-.172.422-.172.771v.075a.367.367 0 0 1-.367.367zm1.142 2.423c0 .473-.335.88-.838.88-.497 0-.845-.4-.845-.88 0-.477.351-.874.845-.874.5 0 .838.403.838.874"
+      />
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M18.5 10a8.5 8.5 0 1 1-17 0 8.5 8.5 0 0 1 17 0M10 17.497a7.497 7.497 0 1 0 0-14.994 7.497 7.497 0 0 0 0 14.994"
         clipRule="evenodd"
       />
     </svg>

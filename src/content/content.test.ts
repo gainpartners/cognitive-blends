@@ -8,6 +8,8 @@ import { contactPage } from './pages/contact';
 import { ourStory } from './pages/our-story';
 import { onlineStore } from './pages/store';
 import { whatIsThriveOne } from './pages/what-is-thriveone';
+import { accordionFor } from './pdp/accordions';
+import { relatedCopy } from './pdp/related';
 import { thriveoneAccordion } from './pdp/thriveone-accordion';
 
 describe('nav', () => {
@@ -64,6 +66,20 @@ describe('verbatim copy', () => {
     assert.equal(contactPage.intro.length, 3);
     const faqs = thriveoneAccordion.find((section) => section.title === 'FAQs');
     assert.ok(faqs && 'faqs' in faqs && faqs.faqs.length === 4);
+    assert.deepEqual(accordionFor('thriveone')?.map((section) => section.title), [
+      "What's Inside?",
+      "Where's It Made?",
+      'How to Take It',
+      "Who It's For?",
+      'How Subscription Works',
+      'FAQs',
+    ]);
+    assert.deepEqual(
+      accordionFor('creatine-sachets-box-of-30')?.map((section) => section.title),
+      ["What's Inside?", "Where's It Made?", 'How to Take It', "Who It's For?", 'FAQs'],
+    );
+    assert.equal(accordionFor('mindbodybundle'), null);
+    assert.equal(relatedCopy.heading, 'You may also like');
   });
 });
 

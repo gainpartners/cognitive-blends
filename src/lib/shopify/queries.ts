@@ -34,6 +34,15 @@ export const PRODUCTS_QUERY = `#graphql
   ${PRODUCT_CARD_FIELDS}
 `;
 
+export const PRODUCT_RECOMMENDATIONS_QUERY = `#graphql
+  query ProductRecommendations($productId: ID!, $intent: ProductRecommendationIntent, $country: CountryCode) @inContext(country: $country) {
+    productRecommendations(productId: $productId, intent: $intent) {
+      ...ProductCardFields
+    }
+  }
+  ${PRODUCT_CARD_FIELDS}
+`;
+
 export const FRONTPAGE_QUERY = `#graphql
   query Frontpage($country: CountryCode) @inContext(country: $country) {
     collection(handle: "frontpage") {

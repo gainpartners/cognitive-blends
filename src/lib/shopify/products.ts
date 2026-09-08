@@ -1,5 +1,11 @@
 import { storefrontFetch } from './storefront';
-import { FRONTPAGE_QUERY, PRODUCT_QUERY, PRODUCTS_QUERY } from './queries';
+import {
+  FRONTPAGE_QUERY,
+  PRODUCT_QUERY,
+  PRODUCT_RECOMMENDATIONS_QUERY,
+  PRODUCTS_QUERY,
+} from './queries';
+import { pickRelated, RELATED_LIMIT } from './related';
 import type { Money, Product, ProductListItem } from './types';
 
 export async function listProducts(): Promise<ProductListItem[]> {
@@ -51,4 +57,35 @@ export async function getProduct(handle: string): Promise<Product | null> {
     { revalidate: 60 },
   );
   return data.product;
+}
+
+async function listRecommendations(
+  productId: string,
+  intent: 'RELATED' | 'COMPLEMENTARY',
+): Promise<ProductListItem[]> {
+  const data = await storefrontFetch<{ productRecommendations: ProductListItem[] | null }>(
+    PRODUCT_RECOMMENDATIONS_QUERY,
+    { productId, intent },
+    { revalidate: 60 },
+  );
+  return data.productRecommendations ?? [];
+}
+
+export async function listRelatedProducts(
+  productId: string,
+  currentHandle: string,
+): Promise<ProductListItem[]> {
+  const recommended: ProductListItem[] = [];
+  for (const intent of ['RELATED', 'COMPLEMENTARY'] as const) {
+    try {
+      recommended.push(...(await listRecommendations(productId, intent)));
+    } catch {
+      // Catalog fill-in below if Shopify returns nothing.
+    }
+    const ready = pickRelated(currentHandle, recommended, []);
+    if (ready.length >= RELATED_LIMIT) return ready;
+  }
+
+  const fallback = await listFrontpageProducts();
+  return pickRelated(currentHandle, recommended, fallback);
 }

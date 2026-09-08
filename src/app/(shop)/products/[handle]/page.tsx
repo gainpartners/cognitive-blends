@@ -3,7 +3,9 @@ import { parseRatingValue, StarRating } from '@/components/ui/StarRating';
 import { ProductAccordion } from '@/components/shop/ProductAccordion';
 import { ProductGallery } from '@/components/shop/ProductGallery';
 import { PurchaseForm } from '@/components/shop/PurchaseForm';
+import { RelatedProducts } from '@/components/shop/RelatedProducts';
 import { Reviews } from '@/components/shop/Reviews';
+import { accordionFor } from '@/content/pdp/accordions';
 import { APPSTLE_SUBSCRIPTIONS_APP_NAME, isStorefrontConfigured } from '@/lib/config/server';
 import { logger } from '@/lib/log';
 import { getProduct } from '@/lib/shopify/products';
@@ -48,34 +50,38 @@ export default async function ProductPage({
   const ratingCount = product.ratingCount?.value
     ? Number.parseInt(product.ratingCount.value, 10)
     : null;
+  const accordion = accordionFor(handle);
   return (
-    <div className="product-page">
-      <div className="shell stack">
-        <div className="product-layout">
-          <ProductGallery images={product.images.nodes} productTitle={product.title} />
-          <div className="stack">
-            <h1 className="page-title" style={{ marginTop: 0 }}>
-              {product.title}
-            </h1>
-            <StarRating value={rating} count={ratingCount} />
-            <PurchaseForm
-              productHandle={product.handle}
-              variant={variant}
-              plans={plans}
-            />
+    <>
+      <div className="product-page">
+        <div className="shell stack">
+          <div className="product-layout">
+            <ProductGallery images={product.images.nodes} productTitle={product.title} />
+            <div className="stack">
+              <h1 className="page-title" style={{ marginTop: 0 }}>
+                {product.title}
+              </h1>
+              <StarRating value={rating} count={ratingCount} />
+              <PurchaseForm
+                productHandle={product.handle}
+                variant={variant}
+                plans={plans}
+              />
+            </div>
           </div>
+          <div
+            className="prose"
+            dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+          />
+          {accordion ? <ProductAccordion sections={accordion} /> : null}
+          <Reviews
+            externalId={productNumericId(product.id)}
+            rating={rating}
+            count={ratingCount}
+          />
         </div>
-        <div
-          className="prose"
-          dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
-        />
-        {handle === 'thriveone' ? <ProductAccordion /> : null}
-        <Reviews
-          externalId={productNumericId(product.id)}
-          rating={rating}
-          count={ratingCount}
-        />
       </div>
-    </div>
+      <RelatedProducts productId={product.id} currentHandle={product.handle} />
+    </>
   );
 }

@@ -1,15 +1,28 @@
-import { thriveoneAccordion } from '@/content/pdp/thriveone-accordion';
+import { CaretIcon, QuestionIcon } from '@/components/layout/icons';
+import type { AccordionSection } from '@/content/pdp/accordion';
 
-export function ProductAccordion() {
+export function ProductAccordion({
+  sections,
+}: {
+  sections: readonly AccordionSection[];
+}) {
+  if (sections.length === 0) return null;
+
   return (
     <div className="accordion">
-      {thriveoneAccordion.map((section) => (
+      {sections.map((section) => (
         <details key={section.title}>
-          <summary>{section.title}</summary>
+          <summary>
+            <span className="accordion__icon">
+              <QuestionIcon />
+            </span>
+            <span className="accordion__label">{section.title}</span>
+            <CaretIcon />
+          </summary>
           <div className="prose accordion__body">
-            {'intro' in section ? <p>{section.intro}</p> : null}
-            {'per' in section ? <p>{section.per}</p> : null}
-            {'items' in section ? (
+            {section.intro ? <p>{section.intro}</p> : null}
+            {section.per ? <p>{section.per}</p> : null}
+            {section.items ? (
               <ul>
                 {section.items.map((item) => (
                   <li key={item.name}>
@@ -18,15 +31,16 @@ export function ProductAccordion() {
                 ))}
               </ul>
             ) : null}
-            {'body' in section ? <p>{section.body}</p> : null}
-            {'faqs' in section
-              ? section.faqs.map((faq) => (
-                  <div key={faq.question}>
-                    <h3>{faq.question}</h3>
-                    <p>{faq.answer}</p>
-                  </div>
-                ))
-              : null}
+            {section.body ? <p>{section.body}</p> : null}
+            {section.paragraphs?.map((paragraph) => (
+              <p key={paragraph.slice(0, 48)}>{paragraph}</p>
+            ))}
+            {section.faqs?.map((faq) => (
+              <div key={faq.question}>
+                <h3>{faq.question}</h3>
+                <p>{faq.answer}</p>
+              </div>
+            ))}
           </div>
         </details>
       ))}

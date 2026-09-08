@@ -19,7 +19,7 @@ export function StarRating({
   count?: number | null;
   showValue?: boolean;
 }) {
-  if (value == null) return null;
+  if (value == null || count === 0) return null;
   const rounded = Math.round(value);
   const marks = '★★★★★'.slice(0, Math.min(5, Math.max(0, rounded))).padEnd(5, '☆');
 

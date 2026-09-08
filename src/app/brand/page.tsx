@@ -10,6 +10,8 @@ import { StatsPanel } from '@/components/content/StatsPanel';
 import { WhoWeAreSlideshow } from '@/components/content/WhoWeAreSlideshow';
 import { Footer } from '@/components/layout/Footer';
 import { HeaderShell } from '@/components/layout/HeaderShell';
+import { ProductAccordion } from '@/components/shop/ProductAccordion';
+import { RelatedProducts } from '@/components/shop/RelatedProducts';
 import { Avatar } from '@/components/ui/Avatar';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -29,8 +31,10 @@ import {
   typeScale,
 } from '@/content/brand';
 import { thriveOneFeatures } from '@/content/home';
+import { thriveoneAccordion } from '@/content/pdp/thriveone-accordion';
 import { isStorefrontConfigured, shopifyHostedAccountUrl } from '@/lib/config/server';
 import { getLocalization } from '@/lib/shopify/localization';
+import { getProduct } from '@/lib/shopify/products';
 import './brand.css';
 
 const sections = [
@@ -56,6 +60,7 @@ export const metadata: Metadata = {
 
 export default async function BrandPage() {
   const localization = isStorefrontConfigured() ? await getLocalization() : null;
+  const thriveone = isStorefrontConfigured() ? await getProduct('thriveone') : null;
   const accountUrl = shopifyHostedAccountUrl() ?? '/account';
 
   return (
@@ -405,6 +410,26 @@ export default async function BrandPage() {
             <StatsPanel />
             <WhoWeAreSlideshow />
           </div>
+
+          <p className="bd-sub">ProductAccordion</p>
+          <div className="bd-shop product-page" style={{ padding: 32 }}>
+            <ProductAccordion sections={thriveoneAccordion} />
+          </div>
+          <p className="bd-spec">
+            Same collapsible rows as the live Shopify PDP: question icon, body type, caret.
+            ThriveOne and Creatine have copy; the bundle does not.
+          </p>
+
+          <p className="bd-sub">RelatedProducts</p>
+          {thriveone ? (
+            <RelatedProducts productId={thriveone.id} currentHandle={thriveone.handle} />
+          ) : (
+            <p className="bd-spec">Needs the storefront to preview.</p>
+          )}
+          <p className="bd-spec">
+            Shopify recommendations first, then the rest of the catalogue. Never the
+            current product. Hidden when empty.
+          </p>
 
           <p className="bd-sub">ContactForm</p>
           <div className="bd-shop" style={{ padding: 32 }}>

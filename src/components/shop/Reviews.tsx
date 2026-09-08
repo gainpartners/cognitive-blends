@@ -13,6 +13,38 @@ export function Reviews({
   rating: number | null;
   count?: number | null;
 }) {
+  if (count === 0) return null;
+
+  return (
+    <Suspense fallback={null}>
+      <ReviewSection externalId={externalId} rating={rating} count={count} />
+    </Suspense>
+  );
+}
+
+async function ReviewSection({
+  externalId,
+  rating,
+  count,
+}: {
+  externalId: string;
+  rating: number | null;
+  count?: number | null;
+}) {
+  const { reviews, ok } = await listReviews(externalId);
+  if (!ok) {
+    if (!count) return null;
+    return (
+      <section id="reviews" className="reviews">
+        <header className="reviews__header">
+          <h2>Customer Reviews</h2>
+        </header>
+        <p className="muted">Reviews unavailable right now.</p>
+      </section>
+    );
+  }
+  if (reviews.length === 0) return null;
+
   return (
     <section id="reviews" className="reviews">
       <header className="reviews__header">
@@ -29,34 +61,12 @@ export function Reviews({
           </div>
         ) : null}
       </header>
-      <Suspense fallback={<p className="muted">Loading reviews…</p>}>
-        <ReviewList externalId={externalId} count={count} />
-      </Suspense>
+      <div>
+        {reviews.map((review) => (
+          <ReviewCard key={review.id} review={review} />
+        ))}
+      </div>
     </section>
-  );
-}
-
-async function ReviewList({
-  externalId,
-  count,
-}: {
-  externalId: string;
-  count?: number | null;
-}) {
-  if (count === 0) return null;
-
-  const { reviews, ok } = await listReviews(externalId);
-  if (!ok) {
-    return <p className="muted">Reviews unavailable right now.</p>;
-  }
-  if (reviews.length === 0) return null;
-
-  return (
-    <div>
-      {reviews.map((review) => (
-        <ReviewCard key={review.id} review={review} />
-      ))}
-    </div>
   );
 }
 

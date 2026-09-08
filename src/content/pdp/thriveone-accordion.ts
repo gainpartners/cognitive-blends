@@ -1,4 +1,6 @@
-export const thriveoneAccordion = [
+import type { AccordionSection } from './accordion';
+
+export const thriveoneAccordion: AccordionSection[] = [
   {
     title: "What's Inside?",
     intro:
@@ -68,4 +70,4 @@ export const thriveoneAccordion = [
       },
     ],
   },
-] as const;
+];
