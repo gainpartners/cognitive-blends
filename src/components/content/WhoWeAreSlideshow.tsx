@@ -36,15 +36,17 @@ export function WhoWeAreSlideshow() {
             aria-hidden={i !== index}
             aria-label={`${i + 1} of ${slides.length}`}
           >
-            <MediaImage
-              src={person.image}
-              alt=""
-              fill
-              sizes={imageSizes.full}
-              className="who-slide__image"
-              style={{ objectPosition: person.objectPosition }}
-              loading="eager"
-            />
+            <div className="who-slide__media">
+              <MediaImage
+                src={person.image}
+                alt=""
+                fill
+                sizes={imageSizes.full}
+                className="who-slide__image"
+                style={{ objectPosition: person.objectPosition }}
+                loading="eager"
+              />
+            </div>
             <div className="who-slide__copy shell">
               <h2 className="who-slide__heading">{whoWeAre.heading}</h2>
               <p className="who-slide__credit">

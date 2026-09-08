@@ -29,6 +29,8 @@ export const colours = [
   { name: 'Teal', token: '--accent', hex: '#00A29B', use: 'Shop buttons, subscribe price' },
   { name: 'Judge.me', token: '--accent-judge', hex: '#108474', use: 'Review widget only' },
   { name: 'Mute', token: '--ink-mute', hex: '#6D7175', use: 'Captions, roles' },
+  { name: 'Label', token: '--ink-label', hex: '#666666', use: 'Price labels on cards' },
+  { name: 'Compare', token: '--ink-compare', hex: '#999999', use: 'Compare-at prices' },
   { name: 'Error', token: '--error', hex: '#F87171', use: 'Form errors' },
 ] as const;
 

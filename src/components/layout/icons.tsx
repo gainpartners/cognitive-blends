@@ -15,13 +15,10 @@ export function CheckIcon() {
 
 export function CloseIcon() {
   return (
-    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 17" aria-hidden>
       <path
-        d="M6 6l12 12M18 6 6 18"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
+        fill="currentColor"
+        d="M.865 15.978a.5.5 0 0 0 .707.707l7.433-7.431 7.579 7.282a.501.501 0 0 0 .846-.37.5.5 0 0 0-.153-.351L9.712 8.546l7.417-7.416a.5.5 0 1 0-.707-.708L8.991 7.853 1.413.573a.5.5 0 1 0-.693.72l7.563 7.268z"
       />
     </svg>
   );
@@ -29,23 +26,25 @@ export function CloseIcon() {
 
 export function SearchIcon() {
   return (
-    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden>
-      <circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
-      <path d="M16 16.5 20.5 21" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    <svg fill="none" viewBox="0 0 18 19" aria-hidden>
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M11.03 11.68A5.784 5.784 0 1 1 2.85 3.5a5.784 5.784 0 0 1 8.18 8.18m.26 1.12a6.78 6.78 0 1 1 .72-.7l5.4 5.4a.5.5 0 1 1-.71.7z"
+        clipRule="evenodd"
+      />
     </svg>
   );
 }
 
 export function AccountIcon() {
   return (
-    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden>
-      <circle cx="12" cy="8" r="3.25" fill="none" stroke="currentColor" strokeWidth="1.4" />
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 19" aria-hidden>
       <path
-        d="M5.5 19.5c1.2-3 3.6-4.5 6.5-4.5s5.3 1.5 6.5 4.5"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M6 4.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0m3-4a4 4 0 1 0 0 8 4 4 0 0 0 0-8m5.58 12.15c1.12.82 1.83 2.24 1.91 4.85H1.51c.08-2.6.79-4.03 1.9-4.85C4.66 11.75 6.5 11.5 9 11.5s4.35.26 5.58 1.15M9 10.5c-2.5 0-4.65.24-6.17 1.35C1.27 12.98.5 14.93.5 18v.5h17V18c0-3.07-.77-5.02-2.33-6.15-1.52-1.1-3.67-1.35-6.17-1.35"
+        clipRule="evenodd"
       />
     </svg>
   );
@@ -53,20 +52,12 @@ export function AccountIcon() {
 
 export function CartIcon() {
   return (
-    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 40 40" aria-hidden>
       <path
-        d="M8 10V7.5a4 4 0 0 1 8 0V10"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-      />
-      <path
-        d="M6.5 10h11l.8 11H5.7L6.5 10Z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinejoin="round"
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M15.75 11.8h-3.16l-.77 11.6a5 5 0 0 0 4.99 5.34h7.38a5 5 0 0 0 4.99-5.33L28.4 11.8zm0 1h-2.22l-.71 10.67a4 4 0 0 0 3.99 4.27h7.38a4 4 0 0 0 4-4.27l-.72-10.67h-2.22v.63a4.75 4.75 0 1 1-9.5 0zm8.5 0h-7.5v.63a3.75 3.75 0 1 0 7.5 0z"
+        clipRule="evenodd"
       />
     </svg>
   );
@@ -100,7 +91,7 @@ export function CaretIcon() {
 
 export function InstagramIcon() {
   return (
-    <svg viewBox="0 0 20 20" width="22" height="22" aria-hidden>
+    <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden>
       <path
         fill="currentColor"
         fillRule="evenodd"
@@ -137,13 +128,10 @@ export function PlayIcon() {
 
 export function MenuIcon() {
   return (
-    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16" aria-hidden>
       <path
-        d="M4 7h16M4 12h16M4 17h16"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
+        fill="currentColor"
+        d="M1 .5a.5.5 0 1 0 0 1h15.71a.5.5 0 0 0 0-1zM.5 8a.5.5 0 0 1 .5-.5h15.71a.5.5 0 0 1 0 1H1A.5.5 0 0 1 .5 8m0 7a.5.5 0 0 1 .5-.5h15.71a.5.5 0 0 1 0 1H1a.5.5 0 0 1-.5-.5"
       />
     </svg>
   );

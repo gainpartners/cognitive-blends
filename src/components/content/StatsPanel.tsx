@@ -15,6 +15,7 @@ export function StatsPanel() {
             width={600}
             height={400}
             sizes={imageSizes.half}
+            loading="eager"
           />
         </Reveal>
         <Reveal className="stats__content" order={1}>

@@ -27,7 +27,6 @@ export function HeaderShell({
           <div className="site-header__bar">
             <div className="header-left">
               <NavDrawer />
-              <SearchTrigger className="header-search--desktop" />
             </div>
             <Link href={homeHref} className="wordmark">
               <Image
@@ -46,7 +45,7 @@ export function HeaderShell({
                   countries={localization.availableCountries}
                 />
               ) : null}
-              <SearchTrigger className="header-search--mobile" />
+              <SearchTrigger />
               <a href={accountUrl} className="header-icon header-account" aria-label="Account">
                 <AccountIcon />
               </a>

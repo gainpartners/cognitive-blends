@@ -356,8 +356,9 @@ export default async function BrandPage() {
             <HeaderShell qty={0} localization={localization} accountUrl={accountUrl} />
           </div>
           <p className="bd-spec">
-            Country control is <code>Name | CURRENCY symbol</code> plus caret. Search is
-            the overlay, not a results page in the bar. Account goes to hosted Shopify.
+            Header icons are the live Dawn SVGs: 20px glyph in a 44px hit. Wordmark is
+            90px wide. Country is <code>Name | CURRENCY symbol</code> plus caret. Search
+            is the overlay. Account goes to hosted Shopify.
           </p>
           <div className="bd-shop">
             <Hero />

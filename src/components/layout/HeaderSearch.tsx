@@ -13,7 +13,6 @@ import Link from 'next/link';
 import { MediaImage } from '@/components/ui/MediaImage';
 import { imageSizes } from '@/lib/shopify/image';
 import { useRouter } from 'next/navigation';
-import { cn } from '@/lib/utils';
 import type { PredictiveSearchResult } from '@/lib/shopify/types';
 import { CloseIcon, SearchIcon } from './icons';
 
@@ -38,12 +37,12 @@ export function SearchProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function SearchTrigger({ className }: { className?: string }) {
+export function SearchTrigger() {
   const { setOpen } = useSearch();
   return (
     <button
       type="button"
-      className={cn('header-icon', className)}
+      className="header-icon"
       aria-label="Search"
       onClick={() => setOpen(true)}
     >
