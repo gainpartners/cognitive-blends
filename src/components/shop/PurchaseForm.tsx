@@ -7,7 +7,6 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Price } from '@/components/ui/Price';
 import { QtyStepper } from '@/components/ui/QtyStepper';
-import { ShopPayButton } from '@/components/layout/ShopPayButton';
 import {
   bestValuePlanId,
   optionPricing,
@@ -49,12 +48,10 @@ export function PurchaseForm({
   productHandle,
   variant,
   plans,
-  shopOrigin,
 }: {
   productHandle: string;
   variant: ProductVariant | undefined;
   plans: SellingPlan[];
-  shopOrigin?: string;
 }) {
   const [planId, setPlanId] = useState(plans[0]?.id ?? '');
   const [quantity, setQuantity] = useState(1);
@@ -70,17 +67,25 @@ export function PurchaseForm({
   const oneTime = optionPricing(variant, '');
 
   async function onSubmit(formData: FormData) {
+    const checkout = String(formData.get('intent')) === 'checkout';
     setError('');
     setDone(false);
     setPending(true);
     try {
-      await addToCartAction(formData);
+      const result = await addToCartAction(formData);
+      if (checkout) {
+        if (!result.checkoutUrl) {
+          throw new Error('Checkout is unavailable');
+        }
+        window.location.assign(result.checkoutUrl);
+        return;
+      }
       setDone(true);
     } catch (err) {
       log.error('addToCart failed', errorFields(err));
       setError(err instanceof Error ? err.message : 'Could not add to cart');
     } finally {
-      setPending(false);
+      if (!checkout) setPending(false);
     }
   }
 
@@ -159,16 +164,27 @@ export function PurchaseForm({
         </label>
       </div>
 
-      <Button type="submit" disabled={pending || !variant.availableForSale}>
-        {pending ? 'Adding…' : variant.availableForSale ? 'Add to cart' : 'Sold out'}
-      </Button>
-      {shopOrigin && variant.availableForSale ? (
-        <ShopPayButton
-          storeUrl={shopOrigin}
-          variantId={variant.id}
-          quantity={quantity}
-        />
-      ) : null}
+      <div className="purchase-actions">
+        <Button
+          type="submit"
+          name="intent"
+          value="cart"
+          disabled={pending || !variant.availableForSale}
+        >
+          {pending ? 'Adding…' : variant.availableForSale ? 'Add to cart' : 'Sold out'}
+        </Button>
+        {variant.availableForSale ? (
+          <Button
+            type="submit"
+            name="intent"
+            value="checkout"
+            variant="ghost"
+            disabled={pending}
+          >
+            Buy now
+          </Button>
+        ) : null}
+      </div>
       {done ? (
         <p>
           Added to cart. <a href="/cart">View cart</a>

@@ -16,6 +16,8 @@ type Shared = {
 type ButtonAsButton = Shared & {
   as?: 'button';
   type?: 'button' | 'submit' | 'reset';
+  name?: string;
+  value?: string;
   href?: never;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
@@ -77,6 +79,8 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPr
       <button
         ref={ref as React.Ref<HTMLButtonElement>}
         type={props.type ?? 'button'}
+        name={props.name}
+        value={props.value}
         className={classes}
         disabled={props.disabled}
         onClick={props.onClick}

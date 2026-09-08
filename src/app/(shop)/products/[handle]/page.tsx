@@ -4,11 +4,7 @@ import { ProductAccordion } from '@/components/shop/ProductAccordion';
 import { ProductGallery } from '@/components/shop/ProductGallery';
 import { PurchaseForm } from '@/components/shop/PurchaseForm';
 import { Reviews } from '@/components/shop/Reviews';
-import {
-  APPSTLE_SUBSCRIPTIONS_APP_NAME,
-  isStorefrontConfigured,
-  shopOrigin,
-} from '@/lib/config/server';
+import { APPSTLE_SUBSCRIPTIONS_APP_NAME, isStorefrontConfigured } from '@/lib/config/server';
 import { logger } from '@/lib/log';
 import { getProduct } from '@/lib/shopify/products';
 import { purchasePlans } from '@/lib/shopify/selling-plans';
@@ -66,7 +62,6 @@ export default async function ProductPage({
               productHandle={product.handle}
               variant={variant}
               plans={plans}
-              shopOrigin={shopOrigin()}
             />
           </div>
         </div>

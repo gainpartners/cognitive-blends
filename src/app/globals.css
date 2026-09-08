@@ -2273,17 +2273,22 @@ form input[type="password"] {
   color: #ffffff;
 }
 
-.product-page .shop-pay {
-  width: 100%;
-  min-height: 42px;
-  --shop-pay-button-width: 100%;
-  --shop-pay-button-height: 42px;
+.product-page .btn--primary {
+  color: #ffffff;
 }
 
-.product-page .shop-pay shop-pay-button {
-  display: block;
+.product-page .btn--ghost:hover:not(:disabled) {
+  color: #ffffff;
+}
+
+.purchase-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.purchase-actions .btn {
   width: 100%;
-  min-height: 42px;
 }
 
 .product-layout {

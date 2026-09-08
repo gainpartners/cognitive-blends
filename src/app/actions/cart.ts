@@ -17,7 +17,7 @@ export async function addToCartAction(formData: FormData) {
     throw new Error('Missing variant');
   }
 
-  await addToCart({
+  const cart = await addToCart({
     merchandiseId,
     productHandle,
     sellingPlanId: sellingPlanId || null,
@@ -25,6 +25,7 @@ export async function addToCartAction(formData: FormData) {
   });
   revalidatePath('/cart');
   revalidatePath(`/products/${productHandle}`);
+  return { checkoutUrl: cart.checkoutUrl };
 }
 
 export async function removeCartLineAction(formData: FormData) {
