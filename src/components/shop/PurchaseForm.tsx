@@ -9,36 +9,37 @@ import { Price } from '@/components/ui/Price';
 import { QtyStepper } from '@/components/ui/QtyStepper';
 import {
   bestValuePlanId,
-  optionPricing,
-  planCadence,
-  saveAmount,
+  displayPricing,
+  planOffLabel,
+  planTitle,
+  type DisplayPricing,
 } from '@/lib/shopify/selling-plans';
-import type { Money, ProductVariant, SellingPlan } from '@/lib/shopify/types';
+import type { ProductVariant, SellingPlan } from '@/lib/shopify/types';
 import { formatMoney } from '@/lib/utils';
 
 const log = logger('purchase');
 
-function PricePair({
-  price,
-  compareAt,
-  cadence,
+function OfferPrice({
+  offer,
   size = 'md',
 }: {
-  price: Money;
-  compareAt: Money | null;
-  cadence?: string;
+  offer: DisplayPricing;
   size?: 'md' | 'lg';
 }) {
+  const monthly = offer.units === 1 && offer.cadence === 'every month';
   return (
     <span className="price-pair">
-      {compareAt ? (
+      {offer.compareAt ? (
         <s className="price price--compare">
-          {formatMoney(compareAt.amount, compareAt.currencyCode)}
+          {formatMoney(offer.compareAt.amount, offer.compareAt.currencyCode)}
         </s>
       ) : null}
       <span className="price-pair__now">
-        <Price amount={price.amount} currencyCode={price.currencyCode} size={size} />
-        {cadence ? <span className="price-pair__cadence">{cadence}</span> : null}
+        <Price amount={offer.billed.amount} currencyCode={offer.billed.currencyCode} size={size} />
+        {monthly ? <span className="price-pair__cadence">/mo</span> : null}
+        {offer.units > 1 && offer.cadence ? (
+          <span className="price-pair__cadence">{offer.cadence}</span>
+        ) : null}
       </span>
     </span>
   );
@@ -62,9 +63,9 @@ export function PurchaseForm({
   if (!variant) return <p className="muted">This product has no variants.</p>;
 
   const selectedPlan = plans.find((plan) => plan.id === planId);
-  const selected = optionPricing(variant, planId);
+  const selected = displayPricing(variant, selectedPlan);
   const bestId = bestValuePlanId(plans);
-  const oneTime = optionPricing(variant, '');
+  const oneTime = displayPricing(variant, undefined);
 
   async function onSubmit(formData: FormData) {
     const checkout = String(formData.get('intent')) === 'checkout';
@@ -96,21 +97,24 @@ export function PurchaseForm({
       <input type="hidden" name="sellingPlanId" value={planId} />
 
       <div className="price-block">
-        <PricePair
-          price={selected.price}
-          compareAt={selected.compareAt}
-          cadence={planCadence(selectedPlan)}
-          size="lg"
-        />
-        <p className="price-block__tax">Taxes included.</p>
+        <OfferPrice offer={selected} size="lg" />
+        <p className="price-block__tax">
+          {selected.units > 1
+            ? `${formatMoney(selected.unit.amount, selected.unit.currencyCode)}/mo · Taxes included.`
+            : 'Taxes included.'}
+        </p>
       </div>
 
       <QtyStepper value={quantity} onChange={setQuantity} />
 
       <div className="purchase-options">
         {plans.map((plan) => {
-          const pricing = optionPricing(variant, plan.id);
-          const save = saveAmount(pricing.price, pricing.compareAt);
+          const offer = displayPricing(variant, plan);
+          const off = planOffLabel(plan);
+          const meta =
+            offer.units > 1
+              ? `${off} · ${formatMoney(offer.unit.amount, offer.unit.currencyCode)}/mo`
+              : off;
           return (
             <label
               key={plan.id}
@@ -129,17 +133,16 @@ export function PurchaseForm({
               />
               <span className="purchase-option__body">
                 <span className="purchase-option__copy">
-                  <span className="purchase-option__title">{plan.name}</span>
-                  {save ? (
-                    <Badge tone="save">Save {formatMoney(save.amount, save.currencyCode)}</Badge>
+                  <span className="purchase-option__title">{planTitle(plan)}</span>
+                  {meta ? <span className="purchase-option__meta">{meta}</span> : null}
+                  {offer.units > 1 ? (
+                    <span className="purchase-option__desc">
+                      {offer.units} units, billed once
+                    </span>
                   ) : null}
                 </span>
                 <span className="purchase-option__price">
-                  <PricePair
-                    price={pricing.price}
-                    compareAt={pricing.compareAt}
-                    cadence={planCadence(plan)}
-                  />
+                  <OfferPrice offer={offer} />
                 </span>
               </span>
             </label>
@@ -155,10 +158,10 @@ export function PurchaseForm({
           />
           <span className="purchase-option__body">
             <span className="purchase-option__copy">
-              <span className="purchase-option__title">One-time purchase</span>
+              <span className="purchase-option__title">One-time</span>
             </span>
             <span className="purchase-option__price">
-              <PricePair price={oneTime.price} compareAt={oneTime.compareAt} />
+              <OfferPrice offer={oneTime} />
             </span>
           </span>
         </label>

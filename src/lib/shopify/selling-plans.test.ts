@@ -4,10 +4,13 @@ import type { SellingPlan, SellingPlanGroup } from './types';
 import {
   bestValuePlanId,
   customerFacingOptions,
+  displayPricing,
   isAllowedSellingPlanId,
   optionPricing,
   planCadence,
   planDescription,
+  planOffLabel,
+  planTitle,
   purchasePlans,
   saveAmount,
 } from './selling-plans';
@@ -101,6 +104,15 @@ describe('planCadence', () => {
   });
 });
 
+describe('planTitle and planOffLabel', () => {
+  it('uses cadence titles and always says off not save', () => {
+    assert.equal(planTitle(appstleMonthly), 'Every month');
+    assert.equal(planTitle(appstleQuarterly), 'Every 3 months');
+    assert.equal(planOffLabel(appstleMonthly), '15% off');
+    assert.equal(planOffLabel(appstleQuarterly), '20% off');
+  });
+});
+
 describe('planDescription', () => {
   it('strips HTML from selling plan copy', () => {
     assert.equal(
@@ -166,6 +178,15 @@ describe('optionPricing', () => {
             },
           ],
         },
+        {
+          sellingPlan: { id: appstleQuarterly.id },
+          priceAdjustments: [
+            {
+              price: { amount: '71.99', currencyCode: 'EUR' },
+              compareAtPrice: { amount: '89.99', currencyCode: 'EUR' },
+            },
+          ],
+        },
       ],
     },
   };
@@ -182,5 +203,51 @@ describe('optionPricing', () => {
       price: { amount: '76.49', currencyCode: 'EUR' },
       compareAt: { amount: '89.99', currencyCode: 'EUR' },
     });
+  });
+});
+
+describe('displayPricing', () => {
+  const variant: ProductVariant = {
+    id: 'gid://shopify/ProductVariant/1',
+    title: 'Default',
+    availableForSale: true,
+    price: { amount: '89.99', currencyCode: 'EUR' },
+    compareAtPrice: { amount: '99.98', currencyCode: 'EUR' },
+    sellingPlanAllocations: {
+      nodes: [
+        {
+          sellingPlan: { id: appstleMonthly.id },
+          priceAdjustments: [
+            {
+              price: { amount: '76.49', currencyCode: 'EUR' },
+              compareAtPrice: { amount: '89.99', currencyCode: 'EUR' },
+            },
+          ],
+        },
+        {
+          sellingPlan: { id: appstleQuarterly.id },
+          priceAdjustments: [
+            {
+              price: { amount: '71.99', currencyCode: 'EUR' },
+              compareAtPrice: { amount: '89.99', currencyCode: 'EUR' },
+            },
+          ],
+        },
+      ],
+    },
+  };
+
+  it('keeps monthly as a per-delivery price', () => {
+    const offer = displayPricing(variant, appstleMonthly);
+    assert.equal(offer.units, 1);
+    assert.equal(offer.billed.amount, '76.49');
+  });
+
+  it('bills quarterly as a 3-unit total and keeps the unit for /mo', () => {
+    const offer = displayPricing(variant, appstleQuarterly);
+    assert.equal(offer.units, 3);
+    assert.equal(offer.unit.amount, '71.99');
+    assert.equal(offer.billed.amount, '215.97');
+    assert.equal(offer.compareAt?.amount, '269.97');
   });
 });

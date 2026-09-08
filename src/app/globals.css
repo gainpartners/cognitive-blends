@@ -2173,6 +2173,7 @@ form input[type="password"] {
   color: var(--ink);
 }
 
+.purchase-option__meta,
 .purchase-option__desc {
   font-size: 0.875rem;
   color: var(--ink-mute);

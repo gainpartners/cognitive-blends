@@ -44,6 +44,17 @@ export function planCadence(plan: SellingPlan | undefined): string {
   return `every ${count} ${interval}s`;
 }
 
+export function planTitle(plan: SellingPlan): string {
+  const cadence = planCadence(plan);
+  if (!cadence) return plan.name;
+  return cadence.charAt(0).toUpperCase() + cadence.slice(1);
+}
+
+export function planOffLabel(plan: SellingPlan): string {
+  const percent = planDiscountPercent(plan);
+  return percent > 0 ? `${percent}% off` : '';
+}
+
 export function customerFacingOptions(plan: SellingPlan) {
   return plan.options.filter((option) => {
     const value = option.value?.trim() ?? '';
@@ -128,6 +139,54 @@ export function optionPricing(
   const compareAt = adjustment?.compareAtPrice ?? variant.price;
   const save = saveAmount(price, compareAt);
   return { price, compareAt: save ? compareAt : null };
+}
+
+function scaleMoney(money: Money, factor: number): Money {
+  return {
+    amount: (asAmount(money) * factor).toFixed(2),
+    currencyCode: money.currencyCode,
+  };
+}
+
+export function prepaidUnits(
+  plan: SellingPlan | undefined,
+  variant: ProductVariant,
+  unitPrice: Money,
+): number {
+  const count = plan?.billingPolicy?.intervalCount ?? 1;
+  if (!plan || count <= 1) return 1;
+  const oneTime = asAmount(variant.price);
+  const unit = asAmount(unitPrice);
+  if (!Number.isFinite(oneTime) || !Number.isFinite(unit)) return 1;
+  if (unit >= oneTime * 1.5) return 1;
+  return count;
+}
+
+export type DisplayPricing = {
+  billed: Money;
+  compareAt: Money | null;
+  unit: Money;
+  units: number;
+  cadence: string;
+};
+
+export function displayPricing(
+  variant: ProductVariant,
+  plan: SellingPlan | undefined,
+): DisplayPricing {
+  if (!plan) {
+    const { price, compareAt } = optionPricing(variant, '');
+    return { billed: price, compareAt, unit: price, units: 1, cadence: '' };
+  }
+  const { price, compareAt } = optionPricing(variant, plan.id);
+  const units = prepaidUnits(plan, variant, price);
+  return {
+    billed: units > 1 ? scaleMoney(price, units) : price,
+    compareAt: compareAt && units > 1 ? scaleMoney(compareAt, units) : compareAt,
+    unit: price,
+    units,
+    cadence: planCadence(plan),
+  };
 }
 
 export function isAllowedSellingPlanId(
