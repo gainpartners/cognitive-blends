@@ -12,7 +12,6 @@ export const hero = {
 export const popularProducts = {
   heading: 'Most Popular Products',
   oneTimeLabel: 'One-time:',
-  subscribeLabel: 'Subscribe and save:',
   handles: ['mindbodybundle', 'creatine-sachets-box-of-30', 'thriveone'],
 };
 

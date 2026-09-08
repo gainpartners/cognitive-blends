@@ -1,11 +1,9 @@
 import { ProductCard } from '@/components/ui/ProductCard';
 import { Reveal } from '@/components/ui/Reveal';
 import { popularProducts } from '@/content/home';
-import {
-  compareAtPrice,
-  oneTimePrice,
-  subscribePrice,
-} from '@/lib/shopify/products';
+import { APPSTLE_SUBSCRIPTIONS_APP_NAME } from '@/lib/config/server';
+import { compareAtPrice, oneTimePrice } from '@/lib/shopify/products';
+import { subscribeSaveLine } from '@/lib/shopify/selling-plans';
 import type { ProductListItem } from '@/lib/shopify/types';
 
 export function CatalogGrid({ products }: { products: ProductListItem[] }) {
@@ -21,7 +19,6 @@ export function CatalogGrid({ products }: { products: ProductListItem[] }) {
       {ordered.map((product, index) => {
         const oneTime = oneTimePrice(product);
         const compare = compareAtPrice(product);
-        const subscribe = subscribePrice(product);
         return (
           <Reveal key={product.id} order={index}>
             <ProductCard
@@ -32,9 +29,11 @@ export function CatalogGrid({ products }: { products: ProductListItem[] }) {
                 amount: oneTime.amount,
                 currencyCode: oneTime.currencyCode,
                 compareAtAmount: compare?.amount,
-                subscribeAmount: subscribe?.amount,
                 oneTimeLabel: popularProducts.oneTimeLabel,
-                subscribeLabel: popularProducts.subscribeLabel,
+                subscribeSave: subscribeSaveLine(
+                  product.sellingPlanGroups?.nodes,
+                  APPSTLE_SUBSCRIPTIONS_APP_NAME,
+                ),
                 showRating: false,
               }}
             />

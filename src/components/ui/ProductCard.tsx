@@ -1,18 +1,12 @@
 import Link from 'next/link';
-import { formatEuroComma, formatMoney, formatPlainAmount } from '@/lib/utils';
+import { formatEuroComma, formatMoney } from '@/lib/utils';
 import { imageSizes } from '@/lib/shopify/image';
 import { MediaImage } from './MediaImage';
 import { Price } from './Price';
 import { StarRating } from './StarRating';
 
-function shopAmount(
-  amount: string,
-  currencyCode: string,
-  subscribe: boolean,
-): string {
-  if (currencyCode === 'EUR') {
-    return subscribe ? formatPlainAmount(amount) : formatEuroComma(amount);
-  }
+function shopAmount(amount: string, currencyCode: string): string {
+  if (currencyCode === 'EUR') return formatEuroComma(amount);
   return formatMoney(amount, currencyCode);
 }
 
@@ -23,9 +17,8 @@ export type ProductCardData = {
   amount: string;
   currencyCode: string;
   compareAtAmount?: string | null;
-  subscribeAmount?: string | null;
   oneTimeLabel?: string;
-  subscribeLabel?: string;
+  subscribeSave?: string | null;
   rating?: number | null;
   ratingCount?: number | null;
   showRating?: boolean;
@@ -58,30 +51,21 @@ export function ProductCard({ product }: { product: ProductCardData }) {
             {product.compareAtAmount ? (
               <span className="product-card__compare">
                 {shopLayout ? (
-                  shopAmount(product.compareAtAmount, product.currencyCode, false)
+                  shopAmount(product.compareAtAmount, product.currencyCode)
                 ) : (
                   <Price amount={product.compareAtAmount} currencyCode={product.currencyCode} />
                 )}
               </span>
             ) : null}
             {shopLayout ? (
-              <span className="price">{shopAmount(product.amount, product.currencyCode, false)}</span>
+              <span className="price">{shopAmount(product.amount, product.currencyCode)}</span>
             ) : (
               <Price amount={product.amount} currencyCode={product.currencyCode} />
             )}
           </div>
-          {product.subscribeAmount ? (
+          {product.subscribeSave ? (
             <div className="product-card__subscribe">
-              {product.subscribeLabel ? (
-                <span className="product-card__price-label">{product.subscribeLabel}</span>
-              ) : null}
-              {shopLayout ? (
-                <span className="price">
-                  {shopAmount(product.subscribeAmount, product.currencyCode, true)}
-                </span>
-              ) : (
-                <Price amount={product.subscribeAmount} currencyCode={product.currencyCode} />
-              )}
+              <span className="price">{product.subscribeSave}</span>
             </div>
           ) : null}
         </div>

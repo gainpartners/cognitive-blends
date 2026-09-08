@@ -22,6 +22,26 @@ const PRODUCT_CARD_FIELDS = `#graphql
         }
       }
     }
+    sellingPlanGroups(first: 10) {
+      nodes {
+        name
+        appName
+        sellingPlans(first: 20) {
+          nodes {
+            id
+            name
+            options { name value }
+            priceAdjustments {
+              adjustmentValue {
+                ... on SellingPlanPercentagePriceAdjustment {
+                  adjustmentPercentage
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 `;
 

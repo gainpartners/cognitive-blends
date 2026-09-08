@@ -15,7 +15,7 @@ export type SellingPlan = {
   name: string;
   description?: string | null;
   recurringDeliveries?: boolean;
-  options: { name: string; value: string }[];
+  options?: { name: string; value: string }[];
   billingPolicy?: { interval: string; intervalCount: number } | null;
   priceAdjustments?: { adjustmentValue?: { adjustmentPercentage?: number } }[];
 };
@@ -66,6 +66,7 @@ export type ProductListItem = {
   priceRange: { minVariantPrice: Money };
   rating?: { value: string } | null;
   ratingCount?: { value: string } | null;
+  sellingPlanGroups?: { nodes: SellingPlanGroup[] };
   variants?: {
     nodes: {
       price: Money;

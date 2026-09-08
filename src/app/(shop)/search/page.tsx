@@ -1,12 +1,9 @@
 import { ProductCard } from '@/components/ui/ProductCard';
 import { Reveal } from '@/components/ui/Reveal';
-import { isStorefrontConfigured } from '@/lib/config/server';
+import { APPSTLE_SUBSCRIPTIONS_APP_NAME, isStorefrontConfigured } from '@/lib/config/server';
 import { errorFields, logger } from '@/lib/log';
-import {
-  compareAtPrice,
-  oneTimePrice,
-  subscribePrice,
-} from '@/lib/shopify/products';
+import { compareAtPrice, oneTimePrice } from '@/lib/shopify/products';
+import { subscribeSaveLine } from '@/lib/shopify/selling-plans';
 import { searchProducts } from '@/lib/shopify/search';
 import { popularProducts } from '@/content/home';
 
@@ -51,7 +48,6 @@ async function SearchResults({ query }: { query: string }) {
       {products.map((product, index) => {
         const oneTime = oneTimePrice(product);
         const compare = compareAtPrice(product);
-        const subscribe = subscribePrice(product);
         return (
           <Reveal key={product.id} order={index}>
             <ProductCard
@@ -62,9 +58,11 @@ async function SearchResults({ query }: { query: string }) {
                 amount: oneTime.amount,
                 currencyCode: oneTime.currencyCode,
                 compareAtAmount: compare?.amount,
-                subscribeAmount: subscribe?.amount,
                 oneTimeLabel: popularProducts.oneTimeLabel,
-                subscribeLabel: popularProducts.subscribeLabel,
+                subscribeSave: subscribeSaveLine(
+                  product.sellingPlanGroups?.nodes,
+                  APPSTLE_SUBSCRIPTIONS_APP_NAME,
+                ),
                 showRating: false,
               }}
             />

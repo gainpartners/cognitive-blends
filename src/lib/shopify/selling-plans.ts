@@ -55,8 +55,25 @@ export function planOffLabel(plan: SellingPlan): string {
   return percent > 0 ? `${percent}% off` : '';
 }
 
+/** Collection cards: savings, not a subscribe price. Appstle only. */
+export function subscribeSaveLine(
+  groups: SellingPlanGroup[] | undefined,
+  appstleAppName: string,
+): string | null {
+  const percents = new Set<number>();
+  for (const group of appstleSellingPlanGroups(groups, appstleAppName)) {
+    for (const plan of group.sellingPlans.nodes) {
+      const percent = planDiscountPercent(plan);
+      if (percent > 0) percents.add(percent);
+    }
+  }
+  if (percents.size === 0) return null;
+  const max = Math.max(...percents);
+  return `Subscribe and save up to ${max}%`;
+}
+
 export function customerFacingOptions(plan: SellingPlan) {
-  return plan.options.filter((option) => {
+  return (plan.options ?? []).filter((option) => {
     const value = option.value?.trim() ?? '';
     if (!value || value.length > 48) return false;
     if (value.includes('MIN_CYCLES') || value.includes('PERCENTAGE')) return false;

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { imageSizes, isShopifyCdn, shopifyImageLoader } from './image';
-import { PRODUCT_QUERY } from './queries';
+import { PRODUCT_QUERY, PRODUCTS_QUERY } from './queries';
 
 describe('shopify images', () => {
   it('recognises the Shopify CDN host', () => {
@@ -24,6 +24,11 @@ describe('shopify images', () => {
 
   it('asks Shopify for the one-time compare-at price', () => {
     assert.match(PRODUCT_QUERY, /compareAtPrice \{ amount currencyCode \}/);
+  });
+
+  it('asks Shopify for Appstle plan percents on collection cards', () => {
+    assert.match(PRODUCTS_QUERY, /sellingPlanGroups\(first: 10\)/);
+    assert.match(PRODUCTS_QUERY, /adjustmentPercentage/);
   });
 
   it('asks the CDN for a display width and keeps existing params', () => {

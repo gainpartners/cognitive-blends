@@ -13,6 +13,7 @@ import {
   planTitle,
   purchasePlans,
   saveAmount,
+  subscribeSaveLine,
 } from './selling-plans';
 import type { ProductVariant } from './types';
 
@@ -101,6 +102,17 @@ describe('planCadence', () => {
   it('names the billing rhythm from the plan policy', () => {
     assert.equal(planCadence(appstleMonthly), 'every month');
     assert.equal(planCadence(appstleQuarterly), 'every 3 months');
+  });
+});
+
+describe('subscribeSaveLine', () => {
+  it('uses up to the deepest Appstle percent and ignores native', () => {
+    assert.equal(subscribeSaveLine(thriveOne, APPSTLE), 'Subscribe and save up to 20%');
+    assert.equal(
+      subscribeSaveLine([group(APPSTLE, [appstleMonthly])], APPSTLE),
+      'Subscribe and save up to 15%',
+    );
+    assert.equal(subscribeSaveLine([group(NATIVE, [nativeMonthly])], APPSTLE), null);
   });
 });
 
