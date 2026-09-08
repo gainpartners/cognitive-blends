@@ -17,6 +17,7 @@ import { Field } from '@/components/ui/Field';
 import { MediaImage } from '@/components/ui/MediaImage';
 import { Price } from '@/components/ui/Price';
 import { ProductCard } from '@/components/ui/ProductCard';
+import { QtyStepper } from '@/components/ui/QtyStepper';
 import { StarRating } from '@/components/ui/StarRating';
 import {
   brand,
@@ -296,6 +297,8 @@ export default async function BrandPage() {
               <Badge tone="active">Active</Badge>
               <Badge tone="inactive">Inactive</Badge>
               <Badge tone="verified">Verified</Badge>
+              <Badge tone="save">Save €13.50</Badge>
+              <Badge tone="best">Best value</Badge>
               <Price amount="64.99" size="lg" />
               <StarRating value={4.7} count={9} />
               <StarRating value={5} showValue={false} />
@@ -303,12 +306,13 @@ export default async function BrandPage() {
             </div>
           </div>
 
-          <p className="bd-sub">Field</p>
+          <p className="bd-sub">Field · QtyStepper</p>
           <div className="bd-preview">
             <div className="bd-preview__body bd-shop" style={{ maxWidth: 360 }}>
               <Field label="Email">
                 <input type="email" name="brand-email" placeholder="Email" readOnly />
               </Field>
+              <QtyStepper value={1} />
             </div>
           </div>
           <p className="bd-spec">

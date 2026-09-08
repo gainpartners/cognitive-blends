@@ -40,6 +40,7 @@ export type ProductVariant = {
   title: string;
   availableForSale: boolean;
   price: Money;
+  compareAtPrice?: Money | null;
   sellingPlanAllocations: { nodes: SellingPlanAllocation[] };
 };
 

@@ -26,7 +26,12 @@ export function formatPlainAmount(amount: string | number): string {
   return value.toFixed(2);
 }
 
+export function shopifyNumericId(gid: string): string {
+  const match = gid.match(/\/(\d+)$/);
+  return match?.[1] ?? '';
+}
+
 export function productNumericId(gid: string): string {
   const match = gid.match(/Product\/(\d+)/);
-  return match?.[1] ?? '';
+  return match?.[1] ?? shopifyNumericId(gid);
 }

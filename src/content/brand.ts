@@ -128,7 +128,7 @@ export const pages = [
   {
     page: 'Product',
     url: '/products/thriveone',
-    desc: 'MediaImage, PurchaseForm (Appstle plans only), accordion, Judge.me reviews.',
+    desc: 'ProductGallery, PurchaseForm (Appstle plans only), accordion, Judge.me reviews.',
   },
   {
     page: 'Our Story',

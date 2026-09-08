@@ -1,8 +1,7 @@
 import { notFound } from 'next/navigation';
-import { MediaImage } from '@/components/ui/MediaImage';
-import { imageSizes } from '@/lib/shopify/image';
 import { parseRatingValue, StarRating } from '@/components/ui/StarRating';
 import { ProductAccordion } from '@/components/shop/ProductAccordion';
+import { ProductGallery } from '@/components/shop/ProductGallery';
 import { PurchaseForm } from '@/components/shop/PurchaseForm';
 import { Reviews } from '@/components/shop/Reviews';
 import { APPSTLE_SUBSCRIPTIONS_APP_NAME, isStorefrontConfigured } from '@/lib/config/server';
@@ -49,23 +48,10 @@ export default async function ProductPage({
   const ratingCount = product.ratingCount?.value
     ? Number.parseInt(product.ratingCount.value, 10)
     : null;
-  const hero = product.images.nodes[0];
-
   return (
     <div className="shell stack">
       <div className="product-layout">
-        <div>
-          {hero?.url ? (
-            <MediaImage
-              src={hero.url}
-              alt={hero.altText || product.title}
-              width={hero.width ?? 1200}
-              height={hero.height ?? 1200}
-              sizes={imageSizes.pdp}
-              preload
-            />
-          ) : null}
-        </div>
+        <ProductGallery images={product.images.nodes} productTitle={product.title} />
         <div className="stack">
           <h1 className="page-title" style={{ marginTop: 0 }}>
             {product.title}

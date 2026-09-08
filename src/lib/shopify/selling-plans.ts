@@ -1,4 +1,4 @@
-import type { SellingPlan, SellingPlanGroup } from './types';
+import type { Money, ProductVariant, SellingPlan, SellingPlanGroup } from './types';
 
 const INTERVAL_RANK: Record<string, number> = {
   DAY: 1,
@@ -21,6 +21,27 @@ export function planDedupeKey(plan: SellingPlan): string {
   const count = plan.billingPolicy?.intervalCount ?? 0;
   const percent = plan.priceAdjustments?.[0]?.adjustmentValue?.adjustmentPercentage;
   return `${interval}:${count}:${percent ?? 'na'}`;
+}
+
+export function planDescription(plan: SellingPlan): string {
+  const raw = plan.description?.trim() ?? '';
+  if (!raw) return '';
+  return raw
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+export function planCadence(plan: SellingPlan | undefined): string {
+  const interval = plan?.billingPolicy?.interval?.toLowerCase();
+  const count = plan?.billingPolicy?.intervalCount ?? 0;
+  if (!interval || count < 1) return '';
+  if (count === 1) return `every ${interval}`;
+  return `every ${count} ${interval}s`;
 }
 
 export function customerFacingOptions(plan: SellingPlan) {
@@ -58,6 +79,55 @@ export function purchasePlans(
     }
   }
   return plans.sort(comparePlans);
+}
+
+export function planDiscountPercent(plan: SellingPlan): number {
+  return plan.priceAdjustments?.[0]?.adjustmentValue?.adjustmentPercentage ?? 0;
+}
+
+export function bestValuePlanId(plans: SellingPlan[]): string | null {
+  if (plans.length < 2) return null;
+  let best = plans[0];
+  for (const plan of plans) {
+    if (planDiscountPercent(plan) > planDiscountPercent(best)) best = plan;
+  }
+  return planDiscountPercent(best) > 0 ? best.id : null;
+}
+
+function asAmount(money: Money | null | undefined): number {
+  if (!money) return Number.NaN;
+  return Number.parseFloat(money.amount);
+}
+
+export function saveAmount(price: Money, compareAt?: Money | null): Money | null {
+  const current = asAmount(price);
+  const was = asAmount(compareAt);
+  if (!Number.isFinite(current) || !Number.isFinite(was) || was <= current) {
+    return null;
+  }
+  return {
+    amount: (was - current).toFixed(2),
+    currencyCode: price.currencyCode,
+  };
+}
+
+export function optionPricing(
+  variant: ProductVariant,
+  planId: string,
+): { price: Money; compareAt: Money | null } {
+  if (!planId) {
+    const compareAt = variant.compareAtPrice ?? null;
+    const save = saveAmount(variant.price, compareAt);
+    return { price: variant.price, compareAt: save ? compareAt : null };
+  }
+
+  const adjustment = variant.sellingPlanAllocations.nodes.find(
+    (node) => node.sellingPlan.id === planId,
+  )?.priceAdjustments[0];
+  const price = adjustment?.price ?? variant.price;
+  const compareAt = adjustment?.compareAtPrice ?? variant.price;
+  const save = saveAmount(price, compareAt);
+  return { price, compareAt: save ? compareAt : null };
 }
 
 export function isAllowedSellingPlanId(

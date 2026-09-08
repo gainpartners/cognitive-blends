@@ -5,6 +5,7 @@ export const imageSizes = {
   feature: '88px',
   audience: '72px',
   thumb: '88px',
+  galleryThumb: '(min-width: 750px) 12vw, 88px',
   search: '48px',
   pdp: '(min-width: 800px) 55vw, 92vw',
 } as const;

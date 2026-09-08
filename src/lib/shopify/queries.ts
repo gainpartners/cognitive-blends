@@ -52,7 +52,7 @@ export const PRODUCT_QUERY = `#graphql
       handle
       title
       descriptionHtml
-      images(first: 6) { nodes { url altText width height } }
+      images(first: 20) { nodes { url altText width height } }
       rating: metafield(namespace: "reviews", key: "rating") { value type }
       ratingCount: metafield(namespace: "reviews", key: "rating_count") { value }
       variants(first: 10) {
@@ -61,6 +61,7 @@ export const PRODUCT_QUERY = `#graphql
           title
           availableForSale
           price { amount currencyCode }
+          compareAtPrice { amount currencyCode }
           sellingPlanAllocations(first: 20) {
             nodes {
               sellingPlan { id }

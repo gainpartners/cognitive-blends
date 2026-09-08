@@ -2,10 +2,16 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import type { SellingPlan, SellingPlanGroup } from './types';
 import {
+  bestValuePlanId,
   customerFacingOptions,
   isAllowedSellingPlanId,
+  optionPricing,
+  planCadence,
+  planDescription,
   purchasePlans,
+  saveAmount,
 } from './selling-plans';
+import type { ProductVariant } from './types';
 
 const APPSTLE = 'appstle';
 const NATIVE = 'gid://shopify/App/66228322305';
@@ -88,11 +94,93 @@ describe('isAllowedSellingPlanId', () => {
   });
 });
 
+describe('planCadence', () => {
+  it('names the billing rhythm from the plan policy', () => {
+    assert.equal(planCadence(appstleMonthly), 'every month');
+    assert.equal(planCadence(appstleQuarterly), 'every 3 months');
+  });
+});
+
+describe('planDescription', () => {
+  it('strips HTML from selling plan copy', () => {
+    assert.equal(
+      planDescription(
+        plan({
+          id: 'x',
+          name: 'n',
+          description: '<p>Receive three units of ThriveOne every 3 months</p>',
+        }),
+      ),
+      'Receive three units of ThriveOne every 3 months',
+    );
+  });
+});
+
 describe('customerFacingOptions', () => {
   it('hides Appstle encoded option values', () => {
     assert.deepEqual(customerFacingOptions(appstleQuarterly), []);
     assert.deepEqual(customerFacingOptions(nativeMonthly), [
       { name: 'Delivery frequency', value: 'Deliver every month' },
     ]);
+  });
+});
+
+describe('saveAmount', () => {
+  it('returns the delta only when compare-at is higher', () => {
+    assert.deepEqual(
+      saveAmount(
+        { amount: '76.49', currencyCode: 'EUR' },
+        { amount: '89.99', currencyCode: 'EUR' },
+      ),
+      { amount: '13.50', currencyCode: 'EUR' },
+    );
+    assert.equal(
+      saveAmount({ amount: '89.99', currencyCode: 'EUR' }, { amount: '89.99', currencyCode: 'EUR' }),
+      null,
+    );
+  });
+});
+
+describe('bestValuePlanId', () => {
+  it('picks the deeper discount when there are two plans', () => {
+    assert.equal(bestValuePlanId([appstleMonthly, appstleQuarterly]), appstleQuarterly.id);
+    assert.equal(bestValuePlanId([appstleMonthly]), null);
+  });
+});
+
+describe('optionPricing', () => {
+  const variant: ProductVariant = {
+    id: 'gid://shopify/ProductVariant/1',
+    title: 'Default',
+    availableForSale: true,
+    price: { amount: '89.99', currencyCode: 'EUR' },
+    compareAtPrice: { amount: '99.98', currencyCode: 'EUR' },
+    sellingPlanAllocations: {
+      nodes: [
+        {
+          sellingPlan: { id: appstleMonthly.id },
+          priceAdjustments: [
+            {
+              price: { amount: '76.49', currencyCode: 'EUR' },
+              compareAtPrice: { amount: '89.99', currencyCode: 'EUR' },
+            },
+          ],
+        },
+      ],
+    },
+  };
+
+  it('uses the variant sale pair for one-time', () => {
+    assert.deepEqual(optionPricing(variant, ''), {
+      price: { amount: '89.99', currencyCode: 'EUR' },
+      compareAt: { amount: '99.98', currencyCode: 'EUR' },
+    });
+  });
+
+  it('uses the allocation pair for a subscribe plan', () => {
+    assert.deepEqual(optionPricing(variant, appstleMonthly.id), {
+      price: { amount: '76.49', currencyCode: 'EUR' },
+      compareAt: { amount: '89.99', currencyCode: 'EUR' },
+    });
   });
 });
